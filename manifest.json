@@ -1,0 +1,17 @@
+{
+    "name": "publictransport.evanlinjin",
+    "description": "description of PublicTransport",
+    "architecture": "all",
+    "title": "PublicTransport",
+    "hooks": {
+        "PublicTransport": {
+            "apparmor": "PublicTransport.apparmor",
+            "desktop":  "PublicTransport.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Evan Lin <evan.linjin@gmail.com>",
+    "framework" : "ubuntu-sdk-15.04"
+}
+
+

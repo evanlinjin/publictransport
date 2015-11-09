@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=PublicTransport
+Exec=qmlscene $@ Main.qml
+Icon=PublicTransport.png
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
+
