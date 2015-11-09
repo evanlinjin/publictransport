@@ -1,57 +1,27 @@
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+import QtQuick 2.4
+import Ubuntu.Components 1.3
+import "components"
+import "pages"
 
 /*!
     \brief MainView with a Label and Button elements.
 */
 
 MainView {
-    // objectName for functional testing purposes (autopilot-qt5)
+    id: root;
     objectName: "mainView"
-
-    // Note! applicationName needs to match the "name" field of the click manifest
     applicationName: "publictransport.evanlinjin"
+    automaticOrientation: true
 
-    /*
-     This property enables the application to change orientation
-     when the device is rotated. The default is false.
-    */
-    //automaticOrientation: true
-
-    // Removes the old toolbar and enables new features of the new header.
-    useDeprecatedToolbar: false
+    property string app_version: "0.1"
+    property string app_description: i18n.tr("Search and find bus stops, train stations and ferry piers. View real time boards, and favourite them.")
 
     width: units.gu(100)
     height: units.gu(75)
 
-    Page {
-        title: i18n.tr("PublicTransport")
-
-        Column {
-            spacing: units.gu(1)
-            anchors {
-                margins: units.gu(2)
-                fill: parent
-            }
-
-            Label {
-                id: label
-                objectName: "label"
-
-                text: i18n.tr("Hello..")
-            }
-
-            Button {
-                objectName: "button"
-                width: parent.width
-
-                text: i18n.tr("Tap me!")
-
-                onClicked: {
-                    label.text = i18n.tr("..world!")
-                }
-            }
-        }
-    }
+    PageStack {id: pageStack; Component.onCompleted: {push(mainPage);}}
+    HomePage {id: mainPage; visible: false;}
+    SettingsPage {id: settingsPage; visible: false;}
+    AboutPage {id: aboutPage; visible: false;}
 }
 
