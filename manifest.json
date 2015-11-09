@@ -1,17 +1,15 @@
 {
     "name": "publictransport.evanlinjin",
-    "description": "description of PublicTransport",
+    "description": "Search and find bus stops, train stations and ferry piers. View real time boards, and favourite them.",
     "architecture": "all",
-    "title": "PublicTransport",
+    "title": "Public Transport",
     "hooks": {
         "PublicTransport": {
             "apparmor": "PublicTransport.apparmor",
-            "desktop":  "PublicTransport.desktop"
+            "desktop": "PublicTransport.desktop"
         }
     },
     "version": "0.1",
     "maintainer": "Evan Lin <evan.linjin@gmail.com>",
-    "framework" : "ubuntu-sdk-15.04"
+    "framework": "ubuntu-sdk-15.04"
 }
-
-
