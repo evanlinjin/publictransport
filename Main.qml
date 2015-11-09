@@ -13,13 +13,13 @@ MainView {
     applicationName: "publictransport.evanlinjin"
     automaticOrientation: true
 
-    property string app_version: "0.1"
-    property string app_description: i18n.tr("Search and find bus stops, train stations and ferry piers. View real time boards, and favourite them.")
+    property real margins: units.gu(2)
 
     width: units.gu(100)
     height: units.gu(75)
 
     PageStack {id: pageStack; Component.onCompleted: {push(mainPage);}}
+
     HomePage {id: mainPage; visible: false;}
     SettingsPage {id: settingsPage; visible: false;}
     AboutPage {id: aboutPage; visible: false;}

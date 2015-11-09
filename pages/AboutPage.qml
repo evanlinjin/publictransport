@@ -4,7 +4,11 @@ import "../components"
 
 Page {
     title: "About"
-    anchors.fill: parent
+    //anchors.fill: parent
+    head.contents: CustomHeader {}
+
+    property string app_version: "0.1"
+    property string app_description: i18n.tr("Search and find bus stops, train stations and ferry piers. View real time boards, and favourite them.")
 
     Column {
         spacing: units.gu(4);
@@ -22,14 +26,14 @@ Page {
 
             Label {
                 width: parent.width
-                text: "<b>Public Transport</b> " + root.app_version
+                text: "<b>Public Transport</b> (" + app_version + ")"
                 fontSize: "large"
                 horizontalAlignment: Text.AlignHCenter
             }
 
             Label {
                 width: parent.width
-                text: root.app_description
+                text: app_description
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
             }

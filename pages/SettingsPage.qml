@@ -5,6 +5,7 @@ import "../components"
 Page {
     title: i18n.tr("Settings");
 
+    head.contents: CustomHeader {}
     head.actions:
         Action {
                 iconName: "info";
