@@ -12,6 +12,7 @@ MainView {
     objectName: "mainView"
     applicationName: "publictransport.evanlinjin"
     automaticOrientation: true
+    anchorToKeyboard: true
 
     property real margins: units.gu(2)
 
