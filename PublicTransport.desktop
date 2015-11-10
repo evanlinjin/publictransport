@@ -5,4 +5,5 @@ Icon=PublicTransport.png
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
-
+X-Ubuntu-Splash-Title=Public Transport
+X-Ubuntu-Splash-Color=white
