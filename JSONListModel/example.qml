@@ -3,7 +3,7 @@
  * Licensed under the MIT licence (http://opensource.org/licenses/mit-license.php)
  */
 
-import QtQuick 1.1
+import QtQuick 2.4
 
 Rectangle {
     width: 400

@@ -3,19 +3,17 @@ import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
 import "../icons"
 
-
 Row {
+    id: main
     spacing: root.margins
+    width: mainPage.width
 
     Icon {
         height: units.gu(4)
-        source: "../PublicTransport.png"
+        source: serviceProviders.get(0).icon
     }
 
     Label {
-        id: heading
-        Layout.fillWidth: true
-        Layout.fillHeight: true
         anchors.verticalCenterOffset: -(subheading.height / 2)
         text: "Public Transport"
         fontSize: "medium"
@@ -25,7 +23,7 @@ Row {
             anchors.top: parent.bottom
             Layout.fillWidth: true
             Layout.fillHeight: true
-            text: pageStack.currentPage.title
+            text: "<b>" + pageStack.currentPage.title + "</b>"
             fontSize: "x-small"
         }
     }

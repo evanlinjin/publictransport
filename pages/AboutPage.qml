@@ -4,8 +4,6 @@ import "../components"
 
 Page {
     title: "About"
-    //anchors.fill: parent
-    head.contents: CustomHeader {}
 
     property string app_version: "0.1"
     property string app_description: i18n.tr("Search and find bus stops, train stations and ferry piers. View real time boards, and favourite them.")

@@ -14,7 +14,7 @@ PageWithBottomEdge {
             Action {
                 iconName: "search";
                 text: i18n.tr("Search Home");
-                onTriggered: {}
+                onTriggered: {pageStack.push(simpleSearchPage);}
             },
             Action {
                 iconName: "settings";
@@ -29,27 +29,28 @@ PageWithBottomEdge {
             onTriggered: {}
         }
 
-        contents: CustomHeader {}
         sections {model: [i18n.tr("Favourites"), i18n.tr("History")]}
     }
 
     VisualItemModel {
         id: homeViewTabs
 
-        FavouritesView {}
-        HistoryView {}
+        FavouritesView {id: favouritesView}
+        HistoryView {id: historyView}
     }
 
     ListView {
-            id: tabView
+        id: tabView
 
-            model: homeViewTabs
-            interactive: false
-            anchors.fill: parent
-            orientation: Qt.Horizontal
-            snapMode: ListView.SnapOneItem
-            currentIndex: parent.head.sections.selectedIndex
-            highlightMoveDuration: UbuntuAnimation.FastDuration
-        }
+        model: homeViewTabs
+        interactive: false
+        anchors.fill: parent
+        orientation: Qt.Horizontal
+        snapMode: ListView.SnapOneItem
+        currentIndex: parent.head.sections.selectedIndex
+        highlightMoveDuration: UbuntuAnimation.FastDuration
+    }
+
+    bottomEdgeTitle: i18n.tr("Find Stop/Station/Pier")
 }
 
