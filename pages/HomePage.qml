@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 import "../components"
 import "../views"
@@ -26,11 +27,11 @@ PageWithBottomEdge {
         backAction: Action {
             iconName: "navigation-menu";
             text: i18n.tr("Navigation Menu");
-            onTriggered: {}
+            onTriggered: {PopupUtils.open(pager)}
         }
 
         sections {
-            model: [i18n.tr("Favourites"), i18n.tr("History")];
+            model: [i18n.tr("Favourites"), i18n.tr("Nearby"), i18n.tr("History")];
             selectedIndex: 0
         }
     }
@@ -45,7 +46,9 @@ PageWithBottomEdge {
         id: homeViewTabs
 
         FavouritesView {id: favouritesView}
+        NearbyView {id: nearbyView}
         HistoryView {id: historyView}
+
     }
 
     ListView {

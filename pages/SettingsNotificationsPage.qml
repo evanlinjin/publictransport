@@ -2,11 +2,13 @@ import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
 import Ubuntu.Components.ListItems 1.3 as ListItem2
+import Ubuntu.Components.Popups 1.3
+
 import "../components"
 
 Page {
     id: page
-    title: i18n.tr("Settings >> Notifications");
+    title: i18n.tr("Notifications");
     head.actions: Action {
         iconName: "add"; text: i18n.tr("Add Notification")
         onTriggered: {

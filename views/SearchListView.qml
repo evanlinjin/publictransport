@@ -7,6 +7,9 @@ import "../JSONListModel"
 
 
 Rectangle {
+
+    property int searchNum: settings.searchResultsNum;
+
     id: main
     width: parent.parent.width; height: parent.parent.height;
     color: Theme.palette.normal.background
@@ -31,21 +34,64 @@ Rectangle {
 
         delegate: ListItem.Subtitled {
             id: listDelegate
-            progression: true
-            visible: index <= settings.searchResultsNum
-            height: index <= settings.searchResultsNum ? units.gu(6) : 0
+            progression: false
+            visible: index <= searchNum
+            height: visible ? units.gu(7) : 0
 
-            iconSource: index <= settings.searchResultsNum ? "https://maps.googleapis.com/maps/api/streetview?size=" +
-                        units.gu(4) + "x" + units.gu(4) + "&location=" +
-                        stop_lat + "," + stop_lon +
-                        "&fov=60&heading=45&pitch=0&key=" +
-                        apiKey.google : ""
+            property string iconThumb: (settings.searchThumbNum === 0 ?
+                                            "https://maps.googleapis.com/maps/api/staticmap?" +
+                                            "center=" + stop_lat + "," + stop_lon +
+                                            "&zoom=" + 16 +
+                                            "&size=" + units.gu(5) + "x" + units.gu(5) +
+                                            // "&markers=color:red%7Clabel:C%7C" + stop_lat + "," + stop_lon +
+                                            "&key="
+                                          :
+                                            "https://maps.googleapis.com/maps/api/streetview?size=" +
+                                            units.gu(5) + "x" + units.gu(5) + "&location=" +
+                                            stop_lat + "," + stop_lon +
+                                            "&fov=60&heading=45&pitch=0&key="
+                                            ) +
+                                       (settings.searchThumbBool ? apiKey.google : "none")
+
+            fallbackIconName: "stock_image"
+            iconSource: visible ? iconThumb : ""
 
             text: model.stop_name
-            subText: "Code: " + model.stop_code
+            subText: "Code: " + model.stop_code + ", ID: " + model.stop_id
+
+            Icon {
+                id: favouriteIcon
+                height: units.gu(3); width: units.gu(3);
+                anchors.verticalCenter: parent.verticalCenter;
+                anchors.right: parent.right;
+                anchors.rightMargin: units.gu(1);
+                name: "non-starred"
+            }
 
             Component.onCompleted: setAt(false);
-            //Component.onDestruction: setAt(false);
+            Component.onDestruction: setAt(false);
+        }
+        cacheBuffer: 10000
+
+        footer: ListItem.Empty {
+            height: units.gu(6);
+            visible: searchResultsView.count > searchNum
+
+            Button {
+                anchors.centerIn: parent;
+                text: "Load More";
+                //onClicked: {searchNum += settings.searchResultsNum; setAt(true)}
+                onClicked: {
+                    setAt(true); loadMoreTimer.running = true;
+                    searchNum += settings.searchResultsNum; setAt(true);
+                }
+            }
+        }
+
+        Timer {
+            id: loadMoreTimer
+            interval: 100; running: false; repeat: false
+            onTriggered: setAt(false);
         }
     }
 

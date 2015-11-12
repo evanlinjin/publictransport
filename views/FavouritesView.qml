@@ -6,7 +6,15 @@ Column {
     width: parent.parent.width
     height: parent.parent.height
 
-    ListView {
+    Rectangle {
+        color: "yellow"
+        width: parent.width
+        height: parent.height
 
+        Label {
+            anchors.centerIn: parent
+            fontSize: "large"
+            text: "To be implemented."
+        }
     }
 }

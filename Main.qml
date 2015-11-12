@@ -3,6 +3,9 @@ import Ubuntu.Components 1.3
 import U1db 1.0 as U1db
 import Qt.labs.settings 1.0
 import Ubuntu.Components.Themes 1.3
+import Ubuntu.Components.Popups 1.3
+import Ubuntu.Components.ListItems 1.3 as ListItem
+
 
 import "components"
 import "pages"
@@ -37,8 +40,35 @@ MainView {
     CustomHeader {id: customHeader; visible: false;}
     SearchHeader {id: searchHeader; visible: false;}
 
+    /* COMPONENTS DEFINED HERE ************************************************/
+    Component { id: pager
+
+        Dialog {
+            id: popover
+            edgeMargins: units.gu(10)
+
+            Column {
+                id: containerLayout
+
+                ListItem.Standard {
+                    text: "Real Time Boards"; //icon: "settings"; iconFrame: false;
+                    onTriggered: {pageStack.push(mainPage); PopupUtils.close(popover);}
+                    //showDivider: false;
+                    progression: true;
+                }
+                ListItem.Standard {
+                    text: "Journey Planner"; //icon: "settings"; iconFrame: false;
+                    onTriggered: {pageStack.push(mainPage); PopupUtils.close(popover);}
+                    //showDivider: false;
+                    progression: true;
+                }
+            }
+        }
+    }
+
     /* DIALOGS DEFINED HERE ***************************************************/
     ServiceProviderDialog {id: serviceProviderDialogue;}
+    SearchThumbnailDialogue {id: searchThumbnailDialogue;}
 
     /* HIDDEN STUFF DEFINED HERE **********************************************/
     APIKey {id: apiKey} // This file cannot be shared.
@@ -56,6 +86,8 @@ MainView {
 
         property int searchViewIndex: 0
         property int searchResultsNum: 10
+        property int searchThumbNum: 0
+        property bool searchThumbBool: true
     }
 
     /* PERMANENT LIST MODELS DEFINED HERE *************************************/
@@ -129,6 +161,12 @@ MainView {
             bottomEdgeBackground: "#12a3d8"
             bottomEdgeFont: "white"
         }
+    }
+
+    ListModel {
+        id: searchThumbnailTypes
+        ListElement { name: "Map View"; description: "Shows map view thumbs"; image: "../icons/mapview.png" }
+        ListElement { name: "Street View"; description: "Shows street view thumbs"; image: "../icons/streetview.jpg" }
     }
 
     /* GLOBAL FUNCTIONS DEFINED HERE ******************************************/

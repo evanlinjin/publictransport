@@ -57,7 +57,11 @@ Page {
                     hasClearButton: true
                     text: searchQuery
                     inputMethodHints: Qt.ImhNoPredictiveText //, Qt.ImhNoAutoUppercase
-                    onAccepted: {searchQuery = text; searchListView.setAt(true);}
+                    onAccepted: {
+                        searchListView.setAt(true);
+                        searchListView.searchNum = settings.searchResultsNum;
+                        searchQuery = text;
+                    }
                 }
 
                 Button {
@@ -67,6 +71,7 @@ Page {
                     onPressedChanged: {
                         searchQuery = searchField.text;
                         searchListView.setAt(true);
+                        searchListView.searchNum = settings.searchResultsNum;
                         searchListView.resetList();
                     }
                 }

@@ -7,7 +7,7 @@ Column {
     height: parent.parent.height
 
     Rectangle {
-        color: "white"
+        color: "lightgreen"
         width: parent.width
         height: parent.height
 

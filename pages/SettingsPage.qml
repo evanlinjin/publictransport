@@ -27,6 +27,8 @@ Page {
     function update() {
         notificationSwitch.checked = settings.notificationsBool;
         timeFormatSwitch.checked = settings.show12hrTime;
+        searchThumbnailSelector.subText = i18n.tr(searchThumbnailTypes.get(settings.searchThumbNum).name);
+        serviceProviderSelector.subText = i18n.tr(settings.service)
 
         flickable.update();
         notificationsHeader.text = i18n.tr("Notifications") + " (" + notifications.getCountShown() + ")";
@@ -53,8 +55,6 @@ Page {
                 text: i18n.tr("Notifications") + " (" + notifications.getTimeRange() + ")"
                 showDivider: false
                 progression: true
-                //iconName: "alarm-clock"
-                iconFrame: false
                 control: Switch {
                     id: notificationSwitch
                     checked: settings.notificationsBool
@@ -62,6 +62,17 @@ Page {
                     onCheckedChanged: {settings.notificationsBool = checked;}
                 }
                 onClicked: {pageStack.push(settingsNotificationsPage)}
+            }
+
+            ListItem2.Divider {} ListItem2.Header { text: "Search:"}
+
+            ListItem2.Subtitled {
+                id: searchThumbnailSelector
+                text: i18n.tr("Thumbnail Type")
+                subText: i18n.tr(searchThumbnailTypes.get(settings.searchThumbNum).name)
+                showDivider: false
+                progression: true
+                onClicked: {PopupUtils.open(searchThumbnailDialogue, searchThumbnailSelector)}
             }
 
             ListItem2.Divider {} ListItem2.Header { text: "Time Format:"}
