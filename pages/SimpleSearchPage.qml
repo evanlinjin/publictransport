@@ -1,30 +1,39 @@
 import QtQuick 2.4
-import QtQuick.XmlListModel 2.0
 import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
-import Ubuntu.Components.ListItems 1.3 as ListItem2
+import Ubuntu.Components.Popups 1.3
+import Ubuntu.Components.ListItems 1.3 as ListItem
 import "../JSONListModel"
 import "../components"
+import "../views"
 
 Page {
     id: page
-    title: i18n.tr("Simple Search");
+    title: i18n.tr("Search");
     head.actions: Action {
         iconName: "filters"; text: i18n.tr("Filter Results")
         onTriggered: {}
     }
 
+    //onActiveChanged: {update();}
+
     property string searchQuery: "";
+    // *** This property is moved to: settings.searchViewIndex ***
+    //property int viewIndex: 0;
+
     function update() {
-        searchQuery = searchField.text
-        busStops.updateJSONModel();
+        searchQuery = searchField.text;
     }
+
+    /**************************************************************************/
+    /* SEARCH BAR DEFINITION:                                                 */
+    /**************************************************************************/
 
     Rectangle {
         id: searchBarBackground
         anchors {top: parent.top; left: parent.left; right: parent.right;}
-        height: header.height
-        color: UbuntuColors.blue
+        height: units.gu(6)//header.height
+        color: themes.get(settings.themeIndex).searchBackground
 
         Column {
             id: searchBarLayout
@@ -38,92 +47,58 @@ Page {
             Row {
                 id: searchBar
                 spacing: units.gu(1)
+                visible: settings.searchViewIndex === 0
 
                 TextField {
                     id: searchField
-                    placeholderText: "Search"
-                    width: searchBarLayout.width - goButton.width - units.gu(1)
+                    placeholderText: "Search..."
+                    width: searchBarLayout.width - units.gu(1) - searchButton.width
                     highlighted: true
+                    hasClearButton: true
                     text: searchQuery
-                    onDisplayTextChanged: searchQuery = text;
+                    inputMethodHints: Qt.ImhNoPredictiveText //, Qt.ImhNoAutoUppercase
+                    onAccepted: {searchQuery = text; searchListView.setAt(true);}
                 }
 
                 Button {
-                    id: goButton; text: "Refresh"; color: UbuntuColors.coolGrey;
-                    onClicked: update()
+                    id: searchButton;
+                    text: "Go";
+                    color: themes.get(settings.themeIndex).searchButtonBackground;
+                    onPressedChanged: {
+                        searchQuery = searchField.text;
+                        searchListView.setAt(true);
+                        searchListView.resetList();
+                    }
                 }
             }
         }
     }
 
-    Rectangle {
-        id: searchResultsBackground
+    /**************************************************************************/
+    /* VIEW MODE DEFINITION:                                                  */
+    /**************************************************************************/
+
+    VisualItemModel {
+        id: searchViewTabs
+
+        SearchListView {id: searchListView}
+        SearchMapView {id: searchMapView}
+    }
+
+    ListView {
+        id: tabView
+
+        model: searchViewTabs
+        interactive: false
         anchors {top: searchBarBackground.bottom; bottom: page.bottom
             left: parent.left; right: parent.right;
         }
-        //color: "yellow"
-        //z: searchBarBackground.z - 1
-
-        ListView {
-            clip: true
-            id: searchResultsView
-            anchors.fill: parent
-            width: parent.width
-            height: parent.height
-
-            JSONListModel {
-                id: busStops
-                source: "https://api.at.govt.nz/v1/gtfs/stops/search/" + searchQuery + "?api_key=" + apiKey.at
-                query: "$.response[*]"
-            }
-            model: busStops.model
-
-            delegate: ListItem2.Subtitled {
-                text: model.stop_name
-                subText: 'Stop Id: ' + model.stop_id + ', Stop Code: ' + model.stop_code
-                progression: true
-
-            }
-        }
+        orientation: Qt.Horizontal
+        snapMode: ListView.SnapOneItem
+        currentIndex: settings.searchViewIndex
+        highlightMoveDuration: UbuntuAnimation.FastDuration
     }
-
-//    ListModel {
-//        id: busStops
-//        ListElement {
-//            stop_id: 1057
-//            stop_code: 6155
-//            stop_name: "171 Bucklands Beach Rd"
-//            stop_lat: -36.877112
-//            stop_lon: 174.90851
-//        }
-
-//        function getId(idx) {
-//            return (idx >= 0 && idx < count) ? get(idx).stop_id : 0
-//        }
-
-//        function getCode(idx) {
-//            return (idx >= 0 && idx < count) ? get(idx).stop_code : 0
-//        }
-
-//        function getName(idx) {
-//            return (idx >= 0 && idx < count) ? get(idx).stop_name : ""
-//        }
-
-//        function getLat(idx) {
-//            return (idx >= 0 && idx < count) ? get(idx).stop_lat : 0.0
-//        }
-
-//        function getLon(idx) {
-//            return (idx >= 0 && idx < count) ? get(idx).stop_lon : 0.0
-//        }
-//    }
-
-//    XmlListModel {
-//        id: stopsFetcher
-//        source: ""
-//    }
 }
-
 
 
 

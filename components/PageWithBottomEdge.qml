@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014 Canonical, Ltd.
+ * Modified by Evan Lin 2015
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -170,7 +171,7 @@ Page {
         z: 1
         width: tipLabel.paintedWidth + units.gu(6)
         height: bottomEdge.tipHeight + units.gu(1)
-        backgroundColor: Theme.palette.normal.overlay
+        backgroundColor: themes.get(settings.themeIndex).bottomEdgeBackground //Theme.palette.normal.overlay
         Label {
             id: tipLabel
 
@@ -178,11 +179,13 @@ Page {
                 top: parent.top
                 left: parent.left
                 right: parent.right
+                //topMargin: contentsPage.flickable.contentY
             }
             height: bottomEdge.tipHeight
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            color: UbuntuColors.darkGrey
+            fontSize: "small"
+            color: themes.get(settings.themeIndex).bottomEdgeFont
             opacity: tip.hidden ? 0.0 : 1.0
             Behavior on opacity {
                 UbuntuNumberAnimation {
@@ -229,6 +232,7 @@ Page {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
+            //topMargin: contentsPage.flickable.contentY
 
         }
         height: bottomEdge.tipHeight
@@ -270,7 +274,7 @@ Page {
         readonly property int pageStartY: 0
 
         z: 1
-        color: Theme.palette.normal.background
+        color: Theme.palette.normal.background//Theme.palette.normal.overlay//themes.get(settings.themeIndex).searchBackground2
         clip: true
         anchors {
             left: parent.left
@@ -292,7 +296,7 @@ Page {
                 name: "expanded"
                 PropertyChanges {
                     target: bottomEdge
-                    y: bottomEdge.pageStartY
+                    y: bottomEdge.pageStartY// - header.height
                 }
             },
             State {
@@ -383,6 +387,34 @@ Page {
                 }
             }
         ]
+
+        Rectangle {
+            id: searchBarLayout
+            anchors {top: parent.top; left: parent.left; right: parent.right;}
+            height: units.gu(6)//header.height
+            color: themes.get(settings.themeIndex).searchBackground
+
+            Column {
+                anchors { fill: parent;
+                    leftMargin: root.margins; rightMargin: root.margins;
+                    topMargin: units.gu(1); bottomMargin: units.gu(1);
+                }
+                spacing: units.gu(1);
+                Row {
+                    id: searchBar
+                    spacing: units.gu(1)
+                    TextField {
+                        placeholderText: "Search..."
+                        width: searchBarLayout.width - goButton.width - units.gu(5)
+                    }
+
+                    Button {
+                        id: goButton
+                        text: "Go"; color: themes.get(settings.themeIndex).searchButtonBackground
+                    }
+                }
+            }
+        }
 
         Loader {
             id: edgeLoader

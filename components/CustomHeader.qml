@@ -5,13 +5,19 @@ import "../icons"
 
 Row {
     id: main
-    spacing: root.margins
     width: mainPage.width
 
+    Rectangle {width: units.gu(0.5); height: width; color: "transparent"}
+
     Icon {
+        id: icon
         height: units.gu(4)
-        source: serviceProviders.get(0).icon
+        //source: serviceProviders.get(settings.serviceProviderIndex).icon
+        name: "stock_website"
+        color: UbuntuColors.orange
     }
+
+    Rectangle {width: units.gu(2); height: width; color: "transparent"}
 
     Label {
         anchors.verticalCenterOffset: -(subheading.height / 2)

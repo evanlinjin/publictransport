@@ -6,7 +6,7 @@ import "../components"
 import "../views"
 
 PageWithBottomEdge {
-    title: i18n.tr("Home");
+    title: i18n.tr("Real Time Boards");
     state: "default"
 
     head {
@@ -14,7 +14,7 @@ PageWithBottomEdge {
             Action {
                 iconName: "search";
                 text: i18n.tr("Search Home");
-                onTriggered: {pageStack.push(simpleSearchPage);}
+                //onTriggered: {pageStack.push(simpleSearchPage);}
             },
             Action {
                 iconName: "settings";
@@ -29,7 +29,16 @@ PageWithBottomEdge {
             onTriggered: {}
         }
 
-        sections {model: [i18n.tr("Favourites"), i18n.tr("History")]}
+        sections {
+            model: [i18n.tr("Favourites"), i18n.tr("History")];
+            selectedIndex: 0
+        }
+    }
+
+    onActiveChanged: update()
+
+    function update() {
+        tabView.currentIndex = parent.head.sections.selectedIndex;
     }
 
     VisualItemModel {
@@ -51,6 +60,7 @@ PageWithBottomEdge {
         highlightMoveDuration: UbuntuAnimation.FastDuration
     }
 
-    bottomEdgeTitle: i18n.tr("Find Stop/Station/Pier")
+    bottomEdgeTitle: i18n.tr("Find a Bus Stop, Train Station or Ferry Pier")
+    bottomEdgePageComponent: SimpleSearchPage {id: simpleSearchPage; visible: false; head.contents: searchHeader}
 }
 

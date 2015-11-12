@@ -78,6 +78,26 @@ Page {
                 }
             }
 
+            ListItem2.Divider {} ListItem2.Header { text: "Theme:"}
+
+            ListItem2.Standard {
+                id: tihemeSelector
+                text: i18n.tr("Use Dark Theme")
+                showDivider: false
+                control : Switch {
+                    id: themeSwitch
+                    checked: settings.theme === "Ubuntu.Components.Themes.SuruDark"
+//                    onClicked: {
+//                        if (checked) {settings.theme = theme.name = "Ubuntu.Components.Themes.SuruDark"}
+//                        else {settings.theme = theme.name = "Ubuntu.Components.Themes.Ambiance"}
+//                    }
+                    onCheckedChanged: {
+                        if (checked) {settings.theme = theme.name = "Ubuntu.Components.Themes.SuruDark"}
+                        else {settings.theme = theme.name = "Ubuntu.Components.Themes.Ambiance"}
+                    }
+                }
+            }
+
             ListItem2.Divider {} ListItem2.Header { text: "Service Provider:"}
 
             ListItem2.Subtitled {
