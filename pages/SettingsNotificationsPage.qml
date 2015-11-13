@@ -52,7 +52,7 @@ Page {
 
     }
 
-    ListView {
+    UbuntuListView {
         id: notificationsListView
         anchors {
             top: topColumn.bottom
@@ -60,8 +60,9 @@ Page {
             right: parent.right
             bottom: parent.bottom
         }
-        displayMarginBeginning: -topColumn.height/2
-        snapMode: ListView.SnapToItem
+        //displayMarginBeginning: -topColumn.height/2
+        //snapMode: ListView.SnapToItem
+        clip: true
         model: notifications
 
         /* SINGLE NOTIFICATION ITEM DEFINED HERE*/
@@ -69,7 +70,7 @@ Page {
             id: notificationsDelegate
             height: units.gu(8)
             width: parent.width
-            visible: notifications.get(index).service === settings.service
+            //visible: notifications.get(index).service === settings.service
             opacity: settings.notificationsBool ? 1 : 0.3
 
             leadingActions: ListItemActions {
@@ -86,7 +87,7 @@ Page {
                 id: listLayout
                 anchors {
                     top: parent.top; left: parent.left; right: parent.right;
-                    leftMargin: units.gu(2); topMargin: label.height / 2; rightMargin: units.gu(2);
+                    leftMargin: units.gu(2); topMargin: label1.height / 2; rightMargin: units.gu(2);
                 }
                 rowSpacing: units.gu(1); columnSpacing: units.gu(0);
 
@@ -121,7 +122,8 @@ Page {
 
                 Column {
                     Rectangle {
-                        width: units.gu(3); height: units.gu(3); radius: 5;
+                        width: units.gu(3); height: units.gu(3);
+                        color: "transparent"
                         CheckBox {
                             checked: notifications.get(index).on
                             onClicked: notifications.get(index).on = checked

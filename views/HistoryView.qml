@@ -7,7 +7,7 @@ Column {
     height: parent.parent.height
 
     Rectangle {
-        color: "white"
+        color: "transparent"
         width: parent.width
         height: parent.height
 

@@ -7,16 +7,12 @@ import "../components"
 import "../views"
 
 PageWithBottomEdge {
-    title: i18n.tr("Real Time Boards");
+    id: page
+    title: i18n.tr("Public Transport");
     state: "default"
 
     head {
         actions: [
-            Action {
-                iconName: "search";
-                text: i18n.tr("Search Home");
-                //onTriggered: {pageStack.push(simpleSearchPage);}
-            },
             Action {
                 iconName: "settings";
                 text: i18n.tr("Settings");
@@ -24,11 +20,11 @@ PageWithBottomEdge {
             }
         ]
 
-        backAction: Action {
-            iconName: "navigation-menu";
-            text: i18n.tr("Navigation Menu");
-            onTriggered: {PopupUtils.open(pager)}
-        }
+//        backAction: Action {
+//            iconName: "navigation-menu";
+//            text: i18n.tr("Navigation Menu");
+//            onTriggered: {PopupUtils.open(pager)}
+//        }
 
         sections {
             model: [i18n.tr("Favourites"), i18n.tr("Nearby"), i18n.tr("History")];
@@ -36,11 +32,11 @@ PageWithBottomEdge {
         }
     }
 
-    onActiveChanged: update()
+//    onActiveChanged: update()
 
-    function update() {
-        tabView.currentIndex = parent.head.sections.selectedIndex;
-    }
+//    function update() {
+//        tabView.currentIndex = parent.head.sections.selectedIndex;
+//    }
 
     VisualItemModel {
         id: homeViewTabs
@@ -59,11 +55,11 @@ PageWithBottomEdge {
         anchors.fill: parent
         orientation: Qt.Horizontal
         snapMode: ListView.SnapOneItem
-        currentIndex: parent.head.sections.selectedIndex
+        currentIndex: page.head.sections.selectedIndex
         highlightMoveDuration: UbuntuAnimation.FastDuration
     }
 
     bottomEdgeTitle: i18n.tr("Find a Bus Stop, Train Station or Ferry Pier")
-    bottomEdgePageComponent: SimpleSearchPage {id: simpleSearchPage; visible: false; head.contents: searchHeader}
+    bottomEdgePageComponent: SimpleSearchPage {id: simpleSearchPage; visible: false;}
 }
 

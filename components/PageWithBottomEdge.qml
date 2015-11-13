@@ -171,7 +171,7 @@ Page {
         z: 1
         width: tipLabel.paintedWidth + units.gu(6)
         height: bottomEdge.tipHeight + units.gu(1)
-        backgroundColor: themes.get(settings.themeIndex).bottomEdgeBackground //Theme.palette.normal.overlay
+        backgroundColor: Theme.palette.normal.overlay
         Label {
             id: tipLabel
 
@@ -185,7 +185,7 @@ Page {
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             fontSize: "small"
-            color: themes.get(settings.themeIndex).bottomEdgeFont
+            color: UbuntuColors.coolGrey
             opacity: tip.hidden ? 0.0 : 1.0
             Behavior on opacity {
                 UbuntuNumberAnimation {
@@ -274,7 +274,7 @@ Page {
         readonly property int pageStartY: 0
 
         z: 1
-        color: Theme.palette.normal.background//Theme.palette.normal.overlay//themes.get(settings.themeIndex).searchBackground2
+        color: Theme.palette.normal.background//themes.get(settings.themeIndex).searchBackground2
         clip: true
         anchors {
             left: parent.left
@@ -387,34 +387,6 @@ Page {
                 }
             }
         ]
-
-        Rectangle {
-            id: searchBarLayout
-            anchors {top: parent.top; left: parent.left; right: parent.right;}
-            height: units.gu(6)//header.height
-            color: themes.get(settings.themeIndex).searchBackground
-
-            Column {
-                anchors { fill: parent;
-                    leftMargin: root.margins; rightMargin: root.margins;
-                    topMargin: units.gu(1); bottomMargin: units.gu(1);
-                }
-                spacing: units.gu(1);
-                Row {
-                    id: searchBar
-                    spacing: units.gu(1)
-                    TextField {
-                        placeholderText: "Search..."
-                        width: searchBarLayout.width - goButton.width - units.gu(5)
-                    }
-
-                    Button {
-                        id: goButton
-                        text: "Go"; color: themes.get(settings.themeIndex).searchButtonBackground
-                    }
-                }
-            }
-        }
 
         Loader {
             id: edgeLoader

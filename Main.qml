@@ -30,15 +30,15 @@ MainView {
     PageStack {id: pageStack; Component.onCompleted: {push(mainPage);}}
 
     /* PAGES DEFINED HERE *****************************************************/
-    HomePage {id: mainPage; visible: false; head.contents: customHeader}
-    SettingsPage {id: settingsPage; visible: false; head.contents: customHeader}
-    SettingsNotificationsPage {id: settingsNotificationsPage; visible: false; head.contents: customHeader}
+    HomePage {id: mainPage; visible: false;}
+    SettingsPage {id: settingsPage; visible: false;}
+    SettingsNotificationsPage {id: settingsNotificationsPage; visible: false;}
     AboutPage {id: aboutPage; visible: false;}
     //SimpleSearchPage {id: simpleSearchPage; visible: false; head.contents: customHeader}
 
     /* HEADERS DEFINED HERE ***************************************************/
     CustomHeader {id: customHeader; visible: false;}
-    SearchHeader {id: searchHeader; visible: false;}
+    //SearchHeader {id: searchHeader; visible: false;}
 
     /* COMPONENTS DEFINED HERE ************************************************/
     Component { id: pager
@@ -51,7 +51,7 @@ MainView {
                 id: containerLayout
 
                 ListItem.Standard {
-                    text: "Real Time Boards"; //icon: "settings"; iconFrame: false;
+                    text: mainPage.title; //icon: "settings"; iconFrame: false;
                     onTriggered: {pageStack.push(mainPage); PopupUtils.close(popover);}
                     //showDivider: false;
                     progression: true;
@@ -88,6 +88,11 @@ MainView {
         property int searchResultsNum: 10
         property int searchThumbNum: 0
         property bool searchThumbBool: true
+    }
+
+    property var stored: Settings {
+        property int n_favourites: 2
+        property var favourites: ["1057", "6891", "1025"]
     }
 
     /* PERMANENT LIST MODELS DEFINED HERE *************************************/
@@ -143,6 +148,10 @@ MainView {
             bus_stop_name_search_url_2: "?api_key=";
             bus_stop_name_search_url_query: "$.response[*]";
 
+            bus_stop_name_search_code: "api.at.govt.nz/v1/gtfs/stops/stopCode/";
+            bus_stop_name_search_code_2: "?api_key=";
+            bus_stop_name_search_code_query: "$.response[*]";
+
             routes_search_id: "api.at.govt.nz/v1/gtfs/routes/stopid/";
             routes_search_id_2: "?api_key=";
             routes_search_id_query: "$.response[*]";
@@ -170,12 +179,37 @@ MainView {
     }
 
     /* GLOBAL FUNCTIONS DEFINED HERE ******************************************/
+
     function time(hh, mm) {
         var end = ""
         if (root.settings.show12hrTime === true) {
             if (hh > 12) {hh -= 1; end = " pm"} else {end = " am"}
         }
         return hh + ":" + mm + end
+    }
+
+    /* FAVOURITES FUNCTIONS ***************************************************/
+
+    function isFavourite(stop_id) {
+        for (var i = 0; i < stored.n_favourites; i++) {
+            if (stop_id === stored.favourites[i]) {return true;}
+        } return false;
+    }
+
+    function addFavourite(stop_id) {
+        if (isFavourite(stop_id)) {return;}
+        else {stored.favourites.push(stop_id); stored.n_favourites += 1;}
+        return;
+    }
+
+    function removeFavourite(stop_id) {
+        for (var i = 0; i < stored.n_favourites; i++) {
+            if (stop_id === stored.favourites[i]) {
+                delete stored.favourites[i];
+                stored.n_favourites -= 1;
+                return;
+            }
+        } return;
     }
 }
 
