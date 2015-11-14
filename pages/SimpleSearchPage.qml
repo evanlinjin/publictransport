@@ -23,6 +23,7 @@ Page {
     property int searchNum: settings.searchResultsNum;
 
     //head.onSectionsChanged: {searchBarBackground.currentIndex = tabView.currentIndex = head.sections.selectedIndex;}
+    //head.foregroundColor: UbuntuColors.darkGrey
 
     head.actions: [
 
@@ -75,6 +76,7 @@ Page {
         Rectangle {
             id: searchBarLayout
             width: parent.parent.width; height: parent.parent.height;
+            color: "transparent"
 
             TextField {
                 id: searchField
@@ -93,6 +95,7 @@ Page {
         Rectangle {
             id: searchBarLayout2
             width: parent.parent.width; height: parent.parent.height;
+            color: "transparent"
 
             TextField {
                 id: searchField2
@@ -134,7 +137,7 @@ Page {
 
             id: searchListView
             width: parent.parent.width; height: parent.parent.height;
-            color: Theme.palette.normal.background
+            color: "transparent" //Theme.palette.normal.background
 
             UbuntuListView {
                 id: searchResultsView
@@ -172,11 +175,21 @@ Page {
 
                     Icon {
                         id: favouriteIcon
-                        height: units.gu(3); width: units.gu(3);
+                        height: units.gu(4); width: units.gu(4);
                         anchors.verticalCenter: parent.verticalCenter;
                         anchors.right: parent.right;
                         anchors.rightMargin: units.gu(1);
-                        name: root.isFavourite(model.stop_id) ? "starred" : "non-starred"
+                        name: isFavourite(model.stop_id) ? "starred" : "non-starred"
+
+                        MouseArea {
+                            anchors.fill: parent
+
+                            onClicked: {
+                                Haptics.play({duration: 25, attackIntensity: 0.7});
+                                toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon])
+                                favouriteIcon.name = isFavourite(model.stop_id) ? "starred" : "non-starred"
+                            }
+                        }
                     }
 
                     Component.onCompleted: setAt(false);
