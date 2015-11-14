@@ -22,6 +22,7 @@ MainView {
 
 
     property real margins: units.gu(2)
+    property var searchHistory: []
 
     width: units.gu(100)
     height: units.gu(75)
@@ -30,40 +31,37 @@ MainView {
 
     /* PAGES DEFINED HERE *****************************************************/
     HomePage {id: mainPage; visible: false;}
-    SettingsPage {id: settingsPage; visible: false;}
-    SettingsNotificationsPage {id: settingsNotificationsPage; visible: false;}
-    AboutPage {id: aboutPage; visible: false;}
-    //SimpleSearchPage {id: simpleSearchPage; visible: false; head.contents: customHeader}
+    SettingsPage {visible: false; id: settingsPage;}
+    Component {id: settingsNotificationsPage; SettingsNotificationsPage { visible: false;}}
+    Component {id: aboutPage; AboutPage {visible: false;}}
 
     /* HEADERS DEFINED HERE ***************************************************/
-    CustomHeader {id: customHeader; visible: false;}
-    //SearchHeader {id: searchHeader; visible: false;}
 
     /* COMPONENTS DEFINED HERE ************************************************/
-    Component { id: pager
+    //    Component { id: pager
 
-        Dialog {
-            id: popover
-            edgeMargins: units.gu(10)
+    //        Dialog {
+    //            id: popover
+    //            edgeMargins: units.gu(10)
 
-            Column {
-                id: containerLayout
+    //            Column {
+    //                id: containerLayout
 
-                ListItem.Standard {
-                    text: mainPage.title; //icon: "settings"; iconFrame: false;
-                    onTriggered: {pageStack.push(mainPage); PopupUtils.close(popover);}
-                    //showDivider: false;
-                    progression: true;
-                }
-                ListItem.Standard {
-                    text: "Journey Planner"; //icon: "settings"; iconFrame: false;
-                    onTriggered: {pageStack.push(mainPage); PopupUtils.close(popover);}
-                    //showDivider: false;
-                    progression: true;
-                }
-            }
-        }
-    }
+    //                ListItem.Standard {
+    //                    text: mainPage.title; //icon: "settings"; iconFrame: false;
+    //                    onTriggered: {pageStack.push(mainPage); PopupUtils.close(popover);}
+    //                    //showDivider: false;
+    //                    progression: true;
+    //                }
+    //                ListItem.Standard {
+    //                    text: "Journey Planner"; //icon: "settings"; iconFrame: false;
+    //                    onTriggered: {pageStack.push(mainPage); PopupUtils.close(popover);}
+    //                    //showDivider: false;
+    //                    progression: true;
+    //                }
+    //            }
+    //        }
+    //    }
 
     /* DIALOGS DEFINED HERE ***************************************************/
     ServiceProviderDialog {id: serviceProviderDialogue;}
@@ -83,34 +81,89 @@ MainView {
         property bool show12hrTime: true
         property bool notificationsBool: false
 
-        property int searchViewIndex: 0
         property int searchResultsNum: 10
         property int searchThumbNum: 0
         property bool searchThumbBool: true
     }
 
-    property var stored: Settings {
-        property int n_favourites: 2
-        property var favourites: ["1057", "6891", "1025"]
-    }
-
     /* DATABASES, DOCUMENTS, INDEX AND QUERIES DEFINED HERE *******************/
     U1db.Database {
         id: favouritesDatabase;
-        path: "favouritesData";
+        path: "favouritesDatabase";
+
+        function append() {
+            var stop_ids = favouritesDatabase.listDocs()
+            var index = 0;
+            for (var i = 0; i < stop_ids.length; i++) {
+                if (getDoc(stop_ids[i]).name !== "") {
+                    favourites.append({
+                                          "index" : index,
+                                          "id" : stop_ids[i],
+                                          "code" : getDoc(stop_ids[i]).code,
+                                          "name" : getDoc(stop_ids[i]).name,
+                                          "lat" : getDoc(stop_ids[i]).lat,
+                                          "lon" : getDoc(stop_ids[i]).lon,
+                                          "routes" : getDoc(stop_ids[i]).routes,
+                                      })
+                    index++;
+                }
+            }
+        }
+        Component.onCompleted: append();
     }
 
-    U1db.Document {
-        id: tempFavouriteDocument;
-        database: favouritesDatabase;
-        docId: '0000';
-        contents: {'name'   : '123 Name Of Place',
-                   'code'   : '1234',
-                   'lat'    : '123.123123',
-                   'lon'    : '123.123123',
-                   'routes' : '000, 001, 002, 003'
+    function isFavourite(stop_id) {
+        var stop_ids = favouritesDatabase.listDocs()
+
+        for (var i = 0; i < stop_ids.length; i++) {
+            if (stop_ids[i] === stop_id) {
+                if (favouritesDatabase.getDoc(stop_id).name === "") {return false;}
+                else {return true;}
+            }
         }
+        return false;
     }
+
+    // addFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon, routes])
+    function addFavourite(stop_id, info) {
+
+        var qmlString = "
+
+import QtQuick 2.4;
+import U1db 1.0 as U1db;
+    U1db.Document {
+        id: '" + "id" + stop_id + "';
+        database: favouritesDatabase;
+        docId: '" + stop_id + "';
+        contents: {'name'   : '" + info[0] + "',
+                   'code'   : '" + info[1] + "',
+                   'lat'    : '" + info[2] + "',
+                   'lon'    : '" + info[3] + "',
+                   'routes' : ''
+        }
+    }"
+
+        Qt.createQmlObject(qmlString, favouritesDatabase);
+
+        return
+    }
+
+    function removeFavourite(stop_id) {
+        console.log("Attempting to delete bus stop " + stop_id + " from favourites.")
+        console.log(JSON.stringify(favouritesDatabase.getDoc(stop_id)))
+        addFavourite(stop_id, ["", "", "", ""])
+        console.log("FAVOURITES NOW: " + favouritesDatabase.listDocs())
+        return
+    }
+
+    // toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon, routes])
+    // toggleFavourite(stop_id)
+    function toggleFavourite(stop_id, info) {
+        if (isFavourite(stop_id)) {removeFavourite(stop_id); return;}
+        else {addFavourite(stop_id, info)}
+        return
+    }
+
 
     /* PERMANENT LIST MODELS DEFINED HERE *************************************/
 
@@ -204,71 +257,4 @@ MainView {
         }
         return hh + ":" + mm + end
     }
-
-    /* FAVOURITES FUNCTIONS ***************************************************/
-
-    function isFavourite(stop_id) {
-        var stop_ids = favouritesDatabase.listDocs()
-
-        //console.log("NUMBER OF FAVOURITES: " + stop_ids.length)
-        for (var i = 1; i < stop_ids.length; i++) {
-            console.log("COMPARING: " + stop_ids[i] + " WITH " + stop_id)
-            if (stop_ids[i] === stop_id) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // addFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon, routes])
-    function addFavourite(stop_id, info) {
-        var tempDocument = tempFavouriteDocument
-        var tempContents = {}
-
-        tempDocument.docId = stop_id;
-
-        tempContents["name"] = info[0];
-        tempContents["code"] = info[1];
-        tempContents["lat"] = info[2];
-        tempContents["lon"] = info[3];
-        tempContents["routes"] = "";
-        tempDocument.contents = tempContents;
-
-        // ALL WORKING UP TO THIS POINT ! TODO: Figure out how to add document
-
-        var qmlString = "
-
-import QtQuick 2.4;
-import U1db 1.0 as U1db;
-    U1db.Document {
-        id: '" + "stop_id" + "';
-        database: favouritesDatabase;
-        docId: '" + stop_id + "';
-        contents: {'name'   : '" + info[0] + "',
-                   'code'   : '" + info[1] + "',
-                   'lat'    : '" + info[2] + "',
-                   'lon'    : '" + info[3] + "',
-                   'routes' : ''
-        }
-    }"
-
-        console.log("running : " + qmlString)
-        Qt.createQmlObject(qmlString, favouritesDatabase);
-
-        return
-    }
-
-    function removeFavourite(stop_id) {
-        favouritesDatabase.deleteDoc(stop_id);
-        return
-    }
-
-    // toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon, routes])
-    // toggleFavourite(stop_id)
-    function toggleFavourite(stop_id, info) {
-        if (isFavourite(stop_id)) {removeFavourite(stop_id)}
-        else {addFavourite(stop_id, info)}
-        return
-    }
 }
-

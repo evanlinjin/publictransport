@@ -171,7 +171,7 @@ Page {
         z: 1
         width: tipLabel.paintedWidth + units.gu(6)
         height: bottomEdge.tipHeight + units.gu(1)
-        backgroundColor: Theme.palette.normal.overlay
+        backgroundColor: Theme.palette.normal.background
         Label {
             id: tipLabel
 
@@ -185,7 +185,7 @@ Page {
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             fontSize: "small"
-            color: UbuntuColors.coolGrey
+            //color: UbuntuColors.coolGrey
             opacity: tip.hidden ? 0.0 : 1.0
             Behavior on opacity {
                 UbuntuNumberAnimation {

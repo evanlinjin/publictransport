@@ -45,8 +45,8 @@ Component {
                 color: UbuntuColors.green
                 onClicked: {
                     settings.searchThumbNum = selector.selectedIndex
-                    settingsPage.update();
                     PopupUtils.close(dialogue);
+                    settingsPage.update();
                 }
             }
         }

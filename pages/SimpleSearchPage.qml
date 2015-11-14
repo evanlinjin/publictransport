@@ -171,14 +171,14 @@ Page {
                     iconSource: visible ? iconThumb : ""
 
                     text: model.stop_name
-                    subText: "Code: " + model.stop_code + ", ID: " + model.stop_id
+                    subText: "Code: " + model.stop_code
 
                     Icon {
                         id: favouriteIcon
                         height: units.gu(4); width: units.gu(4);
                         anchors.verticalCenter: parent.verticalCenter;
                         anchors.right: parent.right;
-                        anchors.rightMargin: units.gu(1);
+                        anchors.rightMargin: units.gu(0);
                         name: isFavourite(model.stop_id) ? "starred" : "non-starred"
 
                         MouseArea {
@@ -188,6 +188,7 @@ Page {
                                 Haptics.play({duration: 25, attackIntensity: 0.7});
                                 toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon])
                                 favouriteIcon.name = isFavourite(model.stop_id) ? "starred" : "non-starred"
+                                favouritesDatabase.append();
                             }
                         }
                     }
@@ -212,6 +213,17 @@ Page {
                             setAt(true); loadMoreTimer.running = true;
                             searchNum += settings.searchResultsNum; setAt(true);
                         }
+                    }
+                }
+                Item {
+                    //iconName: "find"
+                    visible: (searchResultsView.count === 0 && !activityIndicator.running)
+                    anchors.centerIn: parent
+
+                    Icon {
+                        id: emptyIcon; name: "find"
+                        anchors.centerIn: parent
+                        height: units.gu(10); width: height; color: "#BBBBBB";
                     }
                 }
             }
@@ -295,7 +307,7 @@ Page {
         onTriggered: setAt(false);
     }
 
-    ActivityIndicator {id: activityIndicator; anchors.centerIn: parent}
+    ActivityIndicator {id: activityIndicator; anchors.centerIn: parent;}
 
     /************************************************************** FUNCTIONS */
 

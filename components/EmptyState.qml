@@ -16,14 +16,14 @@ Item {
     property alias title: emptyLabel.text
     property alias subTitle: emptySublabel.text
 
-    height: parent.height
-    width: parent.width - 2 * root.margins;
+    height: parent.height;
+    width: parent.width;
 
     Icon {
         id: emptyIcon
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: - 1.5 * header.height
+        //anchors.verticalCenterOffset: - 1.5 * header.height
         height: units.gu(10)
         width: height
         color: "#BBBBBB"
@@ -34,8 +34,12 @@ Item {
         anchors.top: emptyIcon.bottom
         anchors.topMargin: units.gu(4)
         anchors.horizontalCenter: parent.horizontalCenter
+        horizontalAlignment: Text.AlignHCenter
+
         fontSize: "large"
         font.bold: true
+        width: parent.width * 0.85;
+        wrapMode: Text.WordWrap
     }
 
     Label {
