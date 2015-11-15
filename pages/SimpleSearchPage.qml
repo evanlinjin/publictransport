@@ -18,7 +18,7 @@ Page {
         searchBarBackground.currentIndex = tabView.currentIndex = head.sections.selectedIndex;
     }
 
-    property string searchQuery: "";
+    property string searchQuery: root.searchQuery;
     property string searchQuery2: "";
     property int searchNum: settings.searchResultsNum;
 
@@ -33,7 +33,7 @@ Page {
         /**********************************************************************/
         Action { iconName: "clear-search"; text: i18n.tr("Clear")
             onTriggered: {
-                if (head.sections.selectedIndex === 0) {searchField.text = searchQuery = "";}
+                if (head.sections.selectedIndex === 0) {searchField.text = root.searchQuery = "";}
                 else {searchField2.text = searchQuery2 = "";}
                 setAt(false);
             }
@@ -85,7 +85,7 @@ Page {
                 placeholderText: "Type a name..."
                 highlighted: true
                 hasClearButton: false
-                text: searchQuery
+                text: root.searchQuery
                 inputMethodHints: Qt.ImhNoPredictiveText
                 onAccepted: {page.reload()}
             }
@@ -144,7 +144,7 @@ Page {
                 anchors.fill: parent;
                 cacheBuffer: 10000;
                 clip: true;
-                model: busStops.model
+                model: nameSearch.model
 
                 delegate: ListItem.Subtitled {
                     id: listDelegate
@@ -179,16 +179,16 @@ Page {
                         anchors.verticalCenter: parent.verticalCenter;
                         anchors.right: parent.right;
                         anchors.rightMargin: units.gu(0);
-                        name: isFavourite(model.stop_id) ? "starred" : "non-starred"
+                        name: favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
 
                         MouseArea {
                             anchors.fill: parent
 
                             onClicked: {
                                 Haptics.play({duration: 25, attackIntensity: 0.7});
-                                toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon])
-                                favouriteIcon.name = isFavourite(model.stop_id) ? "starred" : "non-starred"
-                                favouritesDatabase.append();
+                                favourites.toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon])
+                                favouriteIcon.name = favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
+                                favourites.reloadList();
                             }
                         }
                     }
@@ -262,32 +262,6 @@ Page {
     }
 
     /**************************************************************************/
-    /* MODEL DEFINITIONS:                                                     */
-    /**************************************************************************/
-
-    JSONListModel {
-        id: busStops
-        source: serviceProviders.get(settings.serviceProviderIndex).bus_stop_name_search_url +
-                searchQuery +
-                serviceProviders.get(settings.serviceProviderIndex).bus_stop_name_search_url_2 +
-                apiKey.at
-        query: serviceProviders.get(settings.serviceProviderIndex).bus_stop_name_search_url_query
-
-        Component.onCompleted: setAt(false);
-    }
-
-    JSONListModel {
-        id: busStops2
-        source: serviceProviders.get(settings.serviceProviderIndex).bus_stop_name_search_url +
-                searchQuery +
-                serviceProviders.get(settings.serviceProviderIndex).bus_stop_name_search_url_2 +
-                apiKey.at
-        query: serviceProviders.get(settings.serviceProviderIndex).bus_stop_name_search_url_query
-
-        Component.onCompleted: setAt(false);
-    }
-
-    /**************************************************************************/
     /* TIMER/LOADER DEFINITIONS:                                              */
     /**************************************************************************/
 
@@ -327,7 +301,7 @@ Page {
         timeOut.running = true;
 
         // Change the (appropriate) search query.
-        if (head.sections.selectedIndex === 0) {searchQuery = searchField.text;}
+        if (head.sections.selectedIndex === 0) {root.searchQuery = searchField.text;}
         else {searchQuery2 = searchField2.text;}
 
         return

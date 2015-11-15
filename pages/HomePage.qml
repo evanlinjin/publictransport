@@ -20,37 +20,21 @@ PageWithBottomEdge {
             }
         ]
 
-//        backAction: Action {
-//            iconName: "navigation-menu";
-//            text: i18n.tr("Navigation Menu");
-//            onTriggered: {PopupUtils.open(pager)}
-//        }
-
         sections {
             model: [i18n.tr("Favourites"), i18n.tr("Nearby"), i18n.tr("History")];
             selectedIndex: 0
         }
-    }
-
-//    onActiveChanged: update()
-
-//    function update() {
-//        tabView.currentIndex = parent.head.sections.selectedIndex;
-//    }
-
-    VisualItemModel {
-        id: homeViewTabs
-
-        FavouritesView {id: favouritesView}
-        NearbyView {id: nearbyView}
-        HistoryView {id: historyView}
-
-    }
+    }  
 
     ListView {
         id: tabView
 
-        model: homeViewTabs
+        model: VisualItemModel {
+            MainGridView {model: favourites}
+            MainGridView {model: favourites}
+            HistoryView {id: historyView}
+        }
+
         interactive: false
         anchors.fill: parent
         orientation: Qt.Horizontal

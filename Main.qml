@@ -5,12 +5,13 @@ import Qt.labs.settings 1.0
 import Ubuntu.Components.Themes 1.3
 import Ubuntu.Components.Popups 1.3
 import Ubuntu.Components.ListItems 1.3 as ListItem
-
+import "JSONListModel"
 import "components"
 import "pages"
 import "views"
 import "dialogs"
 import "api"
+import "backends"
 
 MainView {
     id: root;
@@ -24,6 +25,15 @@ MainView {
     property real margins: units.gu(2)
     property var searchHistory: []
 
+    property bool whetherLoading: false
+
+    property string searchQuery: ""
+    property JSONListModel nameSearch: aucklandTransportBackend.nameSearch
+
+    property ListModel favourites: aucklandTransportBackend.favourites
+    property ListModel notifications: aucklandTransportBackend.notifications
+
+
     width: units.gu(100)
     height: units.gu(75)
 
@@ -34,34 +44,6 @@ MainView {
     SettingsPage {visible: false; id: settingsPage;}
     Component {id: settingsNotificationsPage; SettingsNotificationsPage { visible: false;}}
     Component {id: aboutPage; AboutPage {visible: false;}}
-
-    /* HEADERS DEFINED HERE ***************************************************/
-
-    /* COMPONENTS DEFINED HERE ************************************************/
-    //    Component { id: pager
-
-    //        Dialog {
-    //            id: popover
-    //            edgeMargins: units.gu(10)
-
-    //            Column {
-    //                id: containerLayout
-
-    //                ListItem.Standard {
-    //                    text: mainPage.title; //icon: "settings"; iconFrame: false;
-    //                    onTriggered: {pageStack.push(mainPage); PopupUtils.close(popover);}
-    //                    //showDivider: false;
-    //                    progression: true;
-    //                }
-    //                ListItem.Standard {
-    //                    text: "Journey Planner"; //icon: "settings"; iconFrame: false;
-    //                    onTriggered: {pageStack.push(mainPage); PopupUtils.close(popover);}
-    //                    //showDivider: false;
-    //                    progression: true;
-    //                }
-    //            }
-    //        }
-    //    }
 
     /* DIALOGS DEFINED HERE ***************************************************/
     ServiceProviderDialog {id: serviceProviderDialogue;}
@@ -86,122 +68,11 @@ MainView {
         property bool searchThumbBool: true
     }
 
-    /* DATABASES, DOCUMENTS, INDEX AND QUERIES DEFINED HERE *******************/
-    U1db.Database {
-        id: favouritesDatabase;
-        path: "favouritesDatabase";
-
-        function append() {
-            var stop_ids = favouritesDatabase.listDocs()
-            var index = 0;
-            for (var i = 0; i < stop_ids.length; i++) {
-                if (getDoc(stop_ids[i]).name !== "") {
-                    favourites.append({
-                                          "index" : index,
-                                          "id" : stop_ids[i],
-                                          "code" : getDoc(stop_ids[i]).code,
-                                          "name" : getDoc(stop_ids[i]).name,
-                                          "lat" : getDoc(stop_ids[i]).lat,
-                                          "lon" : getDoc(stop_ids[i]).lon,
-                                          "routes" : getDoc(stop_ids[i]).routes,
-                                      })
-                    index++;
-                }
-            }
-        }
-        Component.onCompleted: append();
-    }
-
-    function isFavourite(stop_id) {
-        var stop_ids = favouritesDatabase.listDocs()
-
-        for (var i = 0; i < stop_ids.length; i++) {
-            if (stop_ids[i] === stop_id) {
-                if (favouritesDatabase.getDoc(stop_id).name === "") {return false;}
-                else {return true;}
-            }
-        }
-        return false;
-    }
-
-    // addFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon, routes])
-    function addFavourite(stop_id, info) {
-
-        var qmlString = "
-
-import QtQuick 2.4;
-import U1db 1.0 as U1db;
-    U1db.Document {
-        id: '" + "id" + stop_id + "';
-        database: favouritesDatabase;
-        docId: '" + stop_id + "';
-        contents: {'name'   : '" + info[0] + "',
-                   'code'   : '" + info[1] + "',
-                   'lat'    : '" + info[2] + "',
-                   'lon'    : '" + info[3] + "',
-                   'routes' : ''
-        }
-    }"
-
-        Qt.createQmlObject(qmlString, favouritesDatabase);
-
-        return
-    }
-
-    function removeFavourite(stop_id) {
-        console.log("Attempting to delete bus stop " + stop_id + " from favourites.")
-        console.log(JSON.stringify(favouritesDatabase.getDoc(stop_id)))
-        addFavourite(stop_id, ["", "", "", ""])
-        console.log("FAVOURITES NOW: " + favouritesDatabase.listDocs())
-        return
-    }
-
-    // toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon, routes])
-    // toggleFavourite(stop_id)
-    function toggleFavourite(stop_id, info) {
-        if (isFavourite(stop_id)) {removeFavourite(stop_id); return;}
-        else {addFavourite(stop_id, info)}
-        return
-    }
+    /* DATABASES AND MODELS DEFINED HERE **************************************/
+    AucklandTransport {id: aucklandTransportBackend}
 
 
-    /* PERMANENT LIST MODELS DEFINED HERE *************************************/
-
-    ListModel {
-        id: notifications
-
-        //            ListElement {
-        //                service: "Auckland Transport";
-        //                on: true;
-        //                start_h: "06"; start_m: "00";
-        //                end_h: "08"; end_m: "30";
-        //            }
-
-        function getTimeRange(index) {
-            return root.time(get(index).start_h, get(index).start_m) + " - " + root.time(get(index).end_h, get(index).end_m)
-        }
-
-        function getCountShown() {
-            var countShown = 0
-            for (var i = 0; i < count; i++) {
-                if (get(i).service === settings.service) {countShown += 1}
-            } return countShown
-        }
-
-        function add(start_h, start_m , end_h, end_m) {
-
-            append({
-                       "start_h": start_h, "start_m": start_m,
-                       "end_h": end_h, "end_m": end_m, "on": true,
-                       "service": serviceProviders.get(settings.serviceProviderIndex).name //settings.service
-                   })
-        }
-
-    }
-
-    ListModel {
-        id: favourites
-    }
+    /* LIST MODELS DEFINED HERE ***********************************************/
 
     ListModel {
         id: history
