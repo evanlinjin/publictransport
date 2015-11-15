@@ -5,6 +5,7 @@ import Qt.labs.settings 1.0
 import Ubuntu.Components.Themes 1.3
 import Ubuntu.Components.Popups 1.3
 import Ubuntu.Components.ListItems 1.3 as ListItem
+import QtPositioning 5.2
 import "JSONListModel"
 import "components"
 import "pages"
@@ -28,7 +29,9 @@ MainView {
     property bool whetherLoading: false
 
     property string searchQuery: ""
+
     property JSONListModel nameSearch: aucklandTransportBackend.nameSearch
+    property JSONListModel locationSearch: aucklandTransportBackend.locationSearch
 
     property ListModel favourites: aucklandTransportBackend.favourites
     property ListModel notifications: aucklandTransportBackend.notifications
@@ -40,21 +43,24 @@ MainView {
     PageStack {id: pageStack; Component.onCompleted: {push(mainPage);}}
 
     /* PAGES DEFINED HERE *****************************************************/
-    HomePage {id: mainPage; visible: false;}
-    SettingsPage {visible: false; id: settingsPage;}
-    Component {id: settingsNotificationsPage; SettingsNotificationsPage { visible: false;}}
-    Component {id: aboutPage; AboutPage {visible: false;}}
+
+    HomePage {id: mainPage; visible: false; head.contents: CustomHeader{}}
+    SettingsPage {visible: false; id: settingsPage; head.contents: CustomHeader{}}
+    Component {id: settingsNotificationsPage; SettingsNotificationsPage { visible: false; head.contents: CustomHeader{}}}
+    Component {id: aboutPage; AboutPage {visible: false; head.contents: CustomHeader{}}}
 
     /* DIALOGS DEFINED HERE ***************************************************/
+
     ServiceProviderDialog {id: serviceProviderDialogue;}
     SearchThumbnailDialogue {id: searchThumbnailDialogue;}
 
     /* HIDDEN STUFF DEFINED HERE **********************************************/
+
     APIKey {id: apiKey} // This file cannot be shared.
 
     /* DEFAULT SETTINGS DEFINED HERE ******************************************/
+
     property var settings: Settings {
-        property string service: "Auckland Transport" // This value needs to be deprecated.
         property int serviceProviderIndex: 0
 
         property int themeIndex: 0
@@ -63,20 +69,21 @@ MainView {
         property bool show12hrTime: true
         property bool notificationsBool: false
 
+        property string current_lat: "-36.879091"
+        property string current_lon: "174.91127"
+
         property int searchResultsNum: 10
         property int searchThumbNum: 0
         property bool searchThumbBool: true
+        property int searchRadius: 500
     }
 
     /* DATABASES AND MODELS DEFINED HERE **************************************/
+
     AucklandTransport {id: aucklandTransportBackend}
 
 
     /* LIST MODELS DEFINED HERE ***********************************************/
-
-    ListModel {
-        id: history
-    }
 
     ListModel {
         id: serviceProviders
@@ -84,32 +91,6 @@ MainView {
         ListElement {
             name: "Auckland Transport";
             icon: "../icons/AucklandTransport.png";
-
-            bus_stop_name_search_url: "https://api.at.govt.nz/v1/gtfs/stops/search/";
-            bus_stop_name_search_url_2: "?api_key=";
-            bus_stop_name_search_url_query: "$.response[*]";
-
-            bus_stop_name_search_code: "api.at.govt.nz/v1/gtfs/stops/stopCode/";
-            bus_stop_name_search_code_2: "?api_key=";
-            bus_stop_name_search_code_query: "$.response[*]";
-
-            routes_search_id: "api.at.govt.nz/v1/gtfs/routes/stopid/";
-            routes_search_id_2: "?api_key=";
-            routes_search_id_query: "$.response[*]";
-
-        }
-    }
-
-    ListModel {
-        id: themes
-
-        ListElement {
-            name: "Default"
-            searchBackground: "#12a3d8"
-            searchBackground2: "white"
-            searchButtonBackground: "#333333"
-            bottomEdgeBackground: "#12a3d8"
-            bottomEdgeFont: "white"
         }
     }
 
@@ -128,4 +109,18 @@ MainView {
         }
         return hh + ":" + mm + end
     }
+
+    function getLocation() {
+        positionSource.update();
+        if (typeof positionSource.position.coordinate.latitude === 'number') {
+            settings.current_lat = (positionSource.position.coordinate.latitude).toFixed(6)
+        }
+        if (typeof positionSource.position.coordinate.longitude === 'number') {
+            settings.current_lon = (positionSource.position.coordinate.longitude).toFixed(5)
+        }
+        locationSearch.updateJSONModel(); return;
+    }
+
+    /* LOCATION DATA **********************************************************/
+    PositionSource {id: positionSource}
 }

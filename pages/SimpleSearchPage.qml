@@ -14,12 +14,12 @@ Page {
     id: page; title: i18n.tr("");
     anchors.fill: parent
 
-    onActiveChanged: {
-        searchBarBackground.currentIndex = tabView.currentIndex = head.sections.selectedIndex;
-    }
+    //onActiveChanged: {
+        //searchBarBackground.currentIndex = tabView.currentIndex = head.sections.selectedIndex;
+    //}
 
     property string searchQuery: root.searchQuery;
-    property string searchQuery2: "";
+    //property string searchQuery2: "";
     property int searchNum: settings.searchResultsNum;
 
     //head.onSectionsChanged: {searchBarBackground.currentIndex = tabView.currentIndex = head.sections.selectedIndex;}
@@ -33,8 +33,12 @@ Page {
         /**********************************************************************/
         Action { iconName: "clear-search"; text: i18n.tr("Clear")
             onTriggered: {
-                if (head.sections.selectedIndex === 0) {searchField.text = root.searchQuery = "";}
-                else {searchField2.text = searchQuery2 = "";}
+//                if (head.sections.selectedIndex === 0) {
+                    searchField.text = root.searchQuery = "";
+//                }
+//                else {
+//                    searchField2.text = searchQuery2 = "";
+//                }
                 setAt(false);
             }
         },
@@ -60,11 +64,11 @@ Page {
     }
 
     /******************************************************** TABS DEFINITION */
-    head.sections {
-        model: [i18n.tr("Name/Code"), i18n.tr("Location")]; selectedIndex: 0
-        onSelectedIndexChanged: {searchBarBackground.currentIndex = tabView.currentIndex = head.sections.selectedIndex;}
-        onEnabledChanged: {searchBarBackground.currentIndex = tabView.currentIndex = head.sections.selectedIndex;}
-    }
+//    head.sections {
+//        model: [i18n.tr("Name/Code"), i18n.tr("Location")]; selectedIndex: 0
+//        onSelectedIndexChanged: {searchBarBackground.currentIndex = tabView.currentIndex = head.sections.selectedIndex;}
+//        onEnabledChanged: {searchBarBackground.currentIndex = tabView.currentIndex = head.sections.selectedIndex;}
+//    }
 
     /**************************************************************************/
     /* SEARCH BAR DEFINITION:                                                 */
@@ -82,7 +86,7 @@ Page {
                 id: searchField
                 anchors.verticalCenter: parent.verticalCenter; x: units.gu(7);
                 width: searchBarLayout.width - units.gu(18)
-                placeholderText: "Type a name..."
+                placeholderText: "Enter a name or code"
                 highlighted: true
                 hasClearButton: false
                 text: root.searchQuery
@@ -92,23 +96,23 @@ Page {
 
         }
 
-        Rectangle {
-            id: searchBarLayout2
-            width: parent.parent.width; height: parent.parent.height;
-            color: "transparent"
+//        Rectangle {
+//            id: searchBarLayout2
+//            width: parent.parent.width; height: parent.parent.height;
+//            color: "transparent"
 
-            TextField {
-                id: searchField2
-                anchors.verticalCenter: parent.verticalCenter; x: units.gu(7);
-                width: searchBarLayout.width - units.gu(18)
-                placeholderText: "Type a name..."
-                highlighted: true
-                hasClearButton: false
-                text: searchQuery2
-                inputMethodHints: Qt.ImhNoPredictiveText
-                onAccepted: {page.reload()}
-            }
-        }
+//            TextField {
+//                id: searchField2
+//                anchors.verticalCenter: parent.verticalCenter; x: units.gu(7);
+//                width: searchBarLayout.width - units.gu(18)
+//                placeholderText: "Type a name..."
+//                highlighted: true
+//                hasClearButton: false
+//                text: searchQuery2
+//                inputMethodHints: Qt.ImhNoPredictiveText
+//                onAccepted: {page.reload()}
+//            }
+//        }
     }
 
     ListView {
@@ -148,7 +152,7 @@ Page {
 
                 delegate: ListItem.Subtitled {
                     id: listDelegate
-                    progression: false
+                    progression: true
                     visible: index <= searchNum
                     height: visible ? units.gu(7) : 0
 
@@ -170,28 +174,28 @@ Page {
                     fallbackIconName: "stock_image"
                     iconSource: visible ? iconThumb : ""
 
-                    text: model.stop_name
+                    text: model.stop_name //model.stop_code
                     subText: "Code: " + model.stop_code
 
-                    Icon {
-                        id: favouriteIcon
-                        height: units.gu(4); width: units.gu(4);
-                        anchors.verticalCenter: parent.verticalCenter;
-                        anchors.right: parent.right;
-                        anchors.rightMargin: units.gu(0);
-                        name: favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
+//                    Icon {
+//                        id: favouriteIcon
+//                        height: units.gu(4); width: units.gu(4);
+//                        anchors.verticalCenter: parent.verticalCenter;
+//                        anchors.right: parent.right;
+//                        anchors.rightMargin: units.gu(0);
+//                        name: favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
 
-                        MouseArea {
-                            anchors.fill: parent
+//                        MouseArea {
+//                            anchors.fill: parent
 
-                            onClicked: {
-                                Haptics.play({duration: 25, attackIntensity: 0.7});
-                                favourites.toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon])
-                                favouriteIcon.name = favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
-                                favourites.reloadList();
-                            }
-                        }
-                    }
+//                            onClicked: {
+//                                Haptics.play({duration: 25, attackIntensity: 0.7});
+//                                favourites.toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon])
+//                                favouriteIcon.name = favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
+//                                favourites.reloadList();
+//                            }
+//                        }
+//                    }
 
                     Component.onCompleted: setAt(false);
                     Component.onDestruction: setAt(false);
@@ -231,17 +235,17 @@ Page {
 
         /******************************************************************** */
         /********************************************** SEARCH: MAP VIEW MODE */
-        Rectangle {
-            id: searchMapView
-            width: parent.parent.width; height: parent.parent.height;
-            color: "red"
+//        Rectangle {
+//            id: searchMapView
+//            width: parent.parent.width; height: parent.parent.height;
+//            color: "red"
 
-            Button {
-                anchors.centerIn: parent
-                text: "Click me!"
-                onClicked: console.log(position.coordinate)
-            }
-        }
+//            Button {
+//                anchors.centerIn: parent
+//                text: "Click me!"
+//                onClicked: console.log(position.coordinate)
+//            }
+//        }
     }
 
     /**************************************************************************/
@@ -252,7 +256,7 @@ Page {
         interactive: false
         anchors {top: searchBarBackground.bottom; bottom: page.bottom
             left: parent.left; right: parent.right;
-            topMargin: units.gu(4)
+            topMargin: units.gu(0)
         }
         orientation: Qt.Horizontal
         snapMode: ListView.SnapOneItem
@@ -301,8 +305,10 @@ Page {
         timeOut.running = true;
 
         // Change the (appropriate) search query.
-        if (head.sections.selectedIndex === 0) {root.searchQuery = searchField.text;}
-        else {searchQuery2 = searchField2.text;}
+//        if (head.sections.selectedIndex === 0) {
+            root.searchQuery = searchField.text;
+//        }
+//        else {searchQuery2 = searchField2.text;}
 
         return
     }

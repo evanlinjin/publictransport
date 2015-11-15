@@ -8,6 +8,7 @@ import "../api"
 Item {
 
     property JSONListModel nameSearch: nameSearch
+    property JSONListModel locationSearch: locationSearch
 
     property ListModel favourites: favourites
     property ListModel notifications: notifications
@@ -21,9 +22,25 @@ Item {
 
     JSONListModel {
         id: nameSearch
-        source: "https://api.at.govt.nz/v1/gtfs/stops/search/" + root.searchQuery + "?api_key=" + apiKey.at
+        source: "https://api.at.govt.nz/v1/gtfs/stops/search/" + root.searchQuery +
+                "?api_key=" + apiKey.at
+
         query: "$.response[*]"
-        Component.onCompleted: root.whetherLoading = false;
+        Component.onCompleted: console.log("NAME SEARCH ADDRESS:" + nameSearch.source)
+    }
+
+    JSONListModel {
+        id: locationSearch
+        source: "https://api.at.govt.nz/v1/gtfs/stops/geosearch?lat=" + settings.current_lat +
+                "&lng=" + settings.current_lon +
+                "&distance=" + settings.searchRadius +
+                "&api_key=" + apiKey.at
+
+        query: "$.response[*]"
+        Component.onCompleted: {
+            console.log("LOCATION SEARCH ADDRESS:" + locationSearch.source)
+
+        }
     }
 
     /**************************************************************************/
@@ -35,7 +52,7 @@ Item {
 
     U1db.Database {
         id: favouritesDatabase;
-        path: "favouritesDatabase";
+        path: "favouritesDatabase3";
         Component.onCompleted: favourites.reloadList();
     }
 
@@ -49,15 +66,15 @@ Item {
             var stop_ids = favouritesDatabase.listDocs()
             var index = 0;
             for (var i = 0; i < stop_ids.length; i++) {
-                if (favouritesDatabase.getDoc(stop_ids[i]).name !== "") {
+                if (favouritesDatabase.getDoc(stop_ids[i]).stop_name !== "") {
                     append({
                                "index" : index,
-                               "id" : stop_ids[i],
-                               "code" : favouritesDatabase.getDoc(stop_ids[i]).code,
-                               "name" : favouritesDatabase.getDoc(stop_ids[i]).name,
-                               "lat" : favouritesDatabase.getDoc(stop_ids[i]).lat,
-                               "lon" : favouritesDatabase.getDoc(stop_ids[i]).lon,
-                               "routes" : favouritesDatabase.getDoc(stop_ids[i]).routes,
+                               "stop_id" : stop_ids[i],
+                               "stop_code" : favouritesDatabase.getDoc(stop_ids[i]).stop_code,
+                               "stop_name" : favouritesDatabase.getDoc(stop_ids[i]).stop_name,
+                               "stop_lat" : favouritesDatabase.getDoc(stop_ids[i]).stop_lat,
+                               "stop_lon" : favouritesDatabase.getDoc(stop_ids[i]).stop_lon,
+                               "stop_routes" : favouritesDatabase.getDoc(stop_ids[i]).stop_routes,
                            })
                     index++;
                 }
@@ -69,7 +86,7 @@ Item {
 
             for (var i = 0; i < stop_ids.length; i++) {
                 if (stop_ids[i] === stop_id) {
-                    if (favouritesDatabase.getDoc(stop_id).name === "") {return false;}
+                    if (favouritesDatabase.getDoc(stop_id).stop_name === "") {return false;}
                     else {return true;}
                 }
             }
@@ -84,13 +101,13 @@ Item {
     import QtQuick 2.4;
     import U1db 1.0 as U1db;
         U1db.Document {
-            id: '" + "id" + stop_id + "';
+            id: '" + "stop_id" + stop_id + "';
             database: favouritesDatabase;
             docId: '" + stop_id + "';
-            contents: {'name'   : '" + info[0] + "',
-                       'code'   : '" + info[1] + "',
-                       'lat'    : '" + info[2] + "',
-                       'lon'    : '" + info[3] + "',
+            contents: {'stop_name'   : '" + info[0] + "',
+                       'stop_code'   : '" + info[1] + "',
+                       'stop_lat'    : '" + info[2] + "',
+                       'stop_lon'    : '" + info[3] + "',
                        'routes' : ''
             }
         }"
@@ -116,6 +133,19 @@ Item {
     }
 
     /**************************************************************************/
+    /*                                                         NEARBY SECTION */
+    /**************************************************************************/
+
+    // --------------------------------------------- NEARBY DATABASE & LISTMODEL
+
+//    U1db.Database {
+//        id: nearbyDatabase;
+//        path: "favouritesDatabase3";
+//        Component.onCompleted: favourites.reloadList();
+//    }
+
+
+    /**************************************************************************/
     /*                                                  NOTIFICATIONS SECTION */
     /**************************************************************************/
 
@@ -124,12 +154,12 @@ Item {
     ListModel {
         id: notifications
 
-        //            ListElement {
-        //                service: "Auckland Transport";
-        //                on: true;
-        //                start_h: "06"; start_m: "00";
-        //                end_h: "08"; end_m: "30";
-        //            }
+        ListElement {
+            service: "Auckland Transport";
+            on: true;
+            start_h: "06"; start_m: "00";
+            end_h: "08"; end_m: "30";
+        }
 
         function getTimeRange(index) {
             return root.time(get(index).start_h, get(index).start_m) + " - " + root.time(get(index).end_h, get(index).end_m)
