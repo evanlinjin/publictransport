@@ -136,6 +136,7 @@ Item {
         }
 
         function reloadList() {
+            root.whetherLoadingNearby = true;
             root.getLocation()
             locationSearch.source = "";
             locationSearch.query = "";
@@ -154,6 +155,7 @@ Item {
                         "&distance=" + settings.searchRadius +
                         "&api_key=" + apiKey.at
                 locationSearch.query = "$.response[*]"
+                root.whetherLoadingNearby = false;
             }
         }
     }

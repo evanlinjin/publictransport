@@ -26,7 +26,7 @@ MainView {
     property real margins: units.gu(2)
     property var searchHistory: []
 
-    property bool whetherLoading: false
+    property bool whetherLoadingNearby: false
 
     property string searchQuery: ""
 

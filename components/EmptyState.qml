@@ -23,7 +23,7 @@ Item {
         id: emptyIcon
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        //anchors.verticalCenterOffset: - 1.5 * header.height
+        anchors.verticalCenterOffset: - header.height
         height: units.gu(10)
         width: height
         color: "#BBBBBB"
@@ -38,7 +38,7 @@ Item {
 
         fontSize: "large"
         font.bold: true
-        width: parent.width * 0.85;
+        width: parent.width * 0.7;
         wrapMode: Text.WordWrap
     }
 
@@ -47,7 +47,7 @@ Item {
         anchors.top: emptyLabel.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         horizontalAlignment: Text.AlignHCenter
-        width: parent.width * 0.85;
+        width: parent.width * 0.7;
         wrapMode: Text.WordWrap
     }
 }

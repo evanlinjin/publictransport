@@ -16,13 +16,23 @@ PageWithBottomEdge {
 //        tabView.currentIndex = 0;
 //    }
 
+    ////////////////////////////////////////////////////////////////////////////
+    //-------------------------------------------------------- HEADER DEFINITION
+    ////////////////////////////////////////////////////////////////////////////
+
     head {
         actions: [
+
+            //---------------------------------------------------- RELOAD ACTION
+
             Action {
                 iconName: "reload"
                 text: i18n.tr("Reload")
                 onTriggered: {root.reloadHome()}
             },
+
+            //-------------------------------------------------- SETTINGS ACTION
+
             Action {
                 iconName: "settings";
                 text: i18n.tr("Settings");
@@ -30,38 +40,73 @@ PageWithBottomEdge {
             }
         ]
 
+        //------------------------------------------------------------- SECTIONS
+
         sections {
             model: [i18n.tr("Favourites"), i18n.tr("Nearby"), i18n.tr("History")];
             selectedIndex: 0
         }
     }  
 
+    ////////////////////////////////////////////////////////////////////////////
+    //---------------------------------------------------------- TABS DEFINITION
+    ////////////////////////////////////////////////////////////////////////////
+
     ListView {
         id: tabView
 
         model: VisualItemModel {
 
+            //------------------------------------------------------- FAVOURITES
+
             MainGridView {
                 id: favouritesGridView;
                 model: favourites
+
+                EmptyState {
+                    id: favouritesEmptyState
+                    visible: favourites.count === 0
+                    iconName: "non-starred"
+                    title: i18n.tr("No favourites")
+                    subTitle: "Swipe from the bottom to <i>search</i> or press <i>nearby</i> to see what's close"
+                }
             }
+
+            //----------------------------------------------------------- NEARBY
 
             MainGridView {
                 id: nearbyGridView;
                 model: locationSearch.model
-                //Component.onCompleted: locationSearch.updateJSONModel();
 
-                Button {
-                    //anchors.verticalCenter: parent.verticalCenter
-                    anchors.centerIn: parent
-                    text: "lat: " + settings.current_lat + ", lon: " + settings.current_lon
-                    opacity: 0.5; color: UbuntuColors.red
-                    onClicked: {root.locationSearch.reloadList()}
+                EmptyState {
+                    id: nearbyEmptyState
+                    visible: locationSearch.model.count === 0
+                    iconName: "location"
+                    title: i18n.tr("No results")
+                    subTitle: "<i>Refresh</i> the page or check system network and location settings"
                 }
+
+//                Button {
+//                    //anchors.verticalCenter: parent.verticalCenter
+//                    anchors.centerIn: parent
+//                    text: "lat: " + settings.current_lat + ", lon: " + settings.current_lon
+//                    opacity: 0.5; color: UbuntuColors.red
+//                    onClicked: {root.locationSearch.reloadList()}
+//                }
             }
+
+            //---------------------------------------------------------- HISTORY
 
             HistoryView {
                 id: historyView;
+
+                EmptyState {
+                    id: historyEmptyState
+                    visible: true
+                    iconName: "history"
+                    title: i18n.tr("No history")
+                    subTitle: "Feature not implemented"
+                }
             }
         }
 
@@ -73,7 +118,11 @@ PageWithBottomEdge {
         highlightMoveDuration: UbuntuAnimation.FastDuration
     }
 
-    bottomEdgeTitle: i18n.tr(" + ")
+    ////////////////////////////////////////////////////////////////////////////
+    //-------------------------------------------------------------- BOTTOM EDGE
+    ////////////////////////////////////////////////////////////////////////////
+
+    bottomEdgeTitle: i18n.tr("Search")
     bottomEdgePageComponent: SimpleSearchPage {id: simpleSearchPage;}
 }
 

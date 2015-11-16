@@ -24,7 +24,6 @@ Rectangle {
     Rectangle {
         width: parent.width - units.gu(1);
         height: parent.height; x: units.gu(0.5);
-
         color: "transparent"
 
         GridView {
