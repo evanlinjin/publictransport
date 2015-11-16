@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.1
 import Ubuntu.Components 1.3
 import Ubuntu.Components.ListItems 1.3 as ListItem2
 import "../components"
+import "../"
 
 Page {
     id: page

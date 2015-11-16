@@ -45,6 +45,7 @@ MainView {
     /* PAGES DEFINED HERE *****************************************************/
 
     HomePage {id: mainPage; visible: false; head.contents: CustomHeader{}}
+    Component{id: timeBoardPage; TimeBoardPage{visible: false;}}
     SettingsPage {visible: false; id: settingsPage; head.contents: CustomHeader{}}
     Component {id: settingsNotificationsPage; SettingsNotificationsPage { visible: false; head.contents: CustomHeader{}}}
     Component {id: aboutPage; AboutPage {visible: false; head.contents: CustomHeader{}}}

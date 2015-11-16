@@ -7,6 +7,8 @@ Row {
     id: main
     width: mainPage.width
 
+    property string mainTitle: i18n.tr("Public Transport")
+
     Rectangle {width: units.gu(0.5); height: width; color: "transparent"}
 
     Icon {
@@ -21,7 +23,7 @@ Row {
 
     Label {
         anchors.verticalCenterOffset: -(subheading.height / 2)
-        text: "Public Transport"
+        text: main.mainTitle
         fontSize: "medium"
 
         Label {

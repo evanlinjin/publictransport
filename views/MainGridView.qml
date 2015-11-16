@@ -50,6 +50,7 @@ Rectangle {
                     width: grid.cellWidth - units.gu(1);
                     height: grid.cellHeight - units.gu(1);
                     anchors.centerIn: parent;
+                    color: "transparent"
 
                     Icon {
                         id: favouriteIcon
@@ -83,6 +84,7 @@ Rectangle {
 
                     Image {
                         id: image
+
                         anchors {
                             top: parent.top;
                             left: parent.left;
@@ -90,6 +92,7 @@ Rectangle {
                             //bottom: parent.bottom;
                             bottomMargin: labelbackground.height
                         }
+
                         fillMode: Image.PreserveAspectCrop
                         cache: true
                         source: (settings.searchThumbNum === 0 ?
@@ -106,6 +109,21 @@ Rectangle {
                                      "&fov=60&heading=" + "45" + "&pitch=0&key="
                                  ) +
                                 (settings.searchThumbBool ? apiKey.google : "none")
+
+                        MouseArea {
+                            id: imageMouseArea
+                            anchors.fill: parent
+                            onClicked: {
+                                Haptics.play({duration: 25, attackIntensity: 0.7});
+                                pageStack.push(timeBoardPage, {
+                                                   'stop_id': stop_id,
+                                                   'stop_name': stop_name,
+                                                   'stop_code': stop_code,
+                                                   'stop_lat': stop_lat,
+                                                   'stop_lon': stop_lon,
+                                               })
+                            }
+                        }
                     }
 
                     Rectangle {
@@ -113,6 +131,21 @@ Rectangle {
                         anchors.bottom: parent.bottom
                         width: thumbnail.width; height: thumbnail.height/3
                         color: settings.theme === "Ubuntu.Components.Themes.SuruDark" ? "white" : "black"
+
+                        MouseArea {
+                            id: labelMouseArea
+                            anchors.fill: parent
+                            onClicked: {
+                                Haptics.play({duration: 25, attackIntensity: 0.7});
+                                pageStack.push(timeBoardPage, {
+                                                   'stop_id': stop_id,
+                                                   'stop_name': stop_name,
+                                                   'stop_code': stop_code,
+                                                   'stop_lat': stop_lat,
+                                                   'stop_lon': stop_lon,
+                                               })
+                            }
+                        }
                     }
 
                     Rectangle {

@@ -152,7 +152,7 @@ Page {
 
                 delegate: ListItem.Subtitled {
                     id: listDelegate
-                    progression: false
+                    progression: true
                     visible: index <= searchNum
                     height: visible ? units.gu(7) : 0
 
@@ -179,7 +179,7 @@ Page {
 
                     Icon {
                         id: favouriteIcon
-                        height: units.gu(4); width: units.gu(4);
+                        height: units.gu(3.5); width: units.gu(3.5);
                         anchors.verticalCenter: parent.verticalCenter;
                         anchors.right: parent.right;
                         anchors.rightMargin: units.gu(0);
@@ -201,7 +201,13 @@ Page {
                     Component.onDestruction: setAt(false);
 
                     onClicked: {
-                        // TO BE DEFINED.
+                        pageStack.push(timeBoardPage, {
+                                           'stop_id': stop_id,
+                                           'stop_name': stop_name,
+                                           'stop_code': stop_code,
+                                           'stop_lat': stop_lat,
+                                           'stop_lon': stop_lon,
+                                       })
                     }
                 }
 
