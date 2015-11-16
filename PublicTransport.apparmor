@@ -1,7 +1,6 @@
 {
     "policy_groups": [
         "networking",
-        "webview",
         "location",
         "connectivity",
         "push-notification-client"

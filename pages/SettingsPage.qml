@@ -64,7 +64,7 @@ Page {
                 onClicked: {pageStack.push(settingsNotificationsPage)}
             }
 
-            ListItem2.Divider {} ListItem2.Header { text: "Search:"}
+            ListItem2.Divider {} ListItem2.Header { text: "General:"}
 
             ListItem2.Subtitled {
                 id: searchThumbnailSelector

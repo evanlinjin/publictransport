@@ -11,19 +11,17 @@ PageWithBottomEdge {
     title: i18n.tr("Home");
     state: "default"
 
-    onActiveChanged: page.head.sections.selectedIndex = 0
+//    onActiveChanged: {
+//        page.head.sections.selectedIndex = 0;
+//        tabView.currentIndex = 0;
+//    }
 
     head {
         actions: [
             Action {
                 iconName: "reload"
-                text: page.head.sections.selectedIndex === 1 ?
-                          i18n.tr("Get Current Location") : i18n.tr("Reload")
-
-                onTriggered: {
-                    if (page.head.sections.selectedIndex === 1) {root.getLocation()}
-                    else {root.favourites.reloadList()}
-                }
+                text: i18n.tr("Reload")
+                onTriggered: {root.reloadHome()}
             },
             Action {
                 iconName: "settings";
@@ -51,14 +49,14 @@ PageWithBottomEdge {
             MainGridView {
                 id: nearbyGridView;
                 model: locationSearch.model
-                Component.onCompleted: locationSearch.updateJSONModel();
+                //Component.onCompleted: locationSearch.updateJSONModel();
 
                 Button {
                     //anchors.verticalCenter: parent.verticalCenter
                     anchors.centerIn: parent
                     text: "lat: " + settings.current_lat + ", lon: " + settings.current_lon
                     opacity: 0.5; color: UbuntuColors.red
-                    onClicked: {root.getLocation()}
+                    onClicked: {root.locationSearch.reloadList()}
                 }
             }
 
@@ -75,7 +73,7 @@ PageWithBottomEdge {
         highlightMoveDuration: UbuntuAnimation.FastDuration
     }
 
-    bottomEdgeTitle: i18n.tr("Find a Bus Stop, Train Station or Ferry Pier")
+    bottomEdgeTitle: i18n.tr(" + ")
     bottomEdgePageComponent: SimpleSearchPage {id: simpleSearchPage;}
 }
 

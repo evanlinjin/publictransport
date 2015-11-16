@@ -52,7 +52,38 @@ Rectangle {
                     height: grid.cellHeight - units.gu(1);
                     anchors.centerIn: parent;
 
+                    Icon {
+                        id: favouriteIcon
+                        height: units.gu(3); width: units.gu(3); z: image.z + 1
+                        name: favourites.isFavourite(model.stop_id) ? "starred" : "non-starred";
+
+                        anchors {
+                            right: thumbnail.right; top: thumbnail.top;
+                            rightMargin: units.gu(1); topMargin: units.gu(1);
+                        }
+
+                        MouseArea {
+                            z: image.z + 2
+                            anchors.fill: parent;
+                            onClicked: {
+                                Haptics.play({duration: 25, attackIntensity: 0.7});
+                                console.log("Star Clicked... ")
+                                root.toggleFavourites(model.stop_id,
+                                                      [
+                                                          model.stop_name,
+                                                          model.stop_code,
+                                                          model.stop_lat,
+                                                          model.stop_lon,
+                                                          model.routes
+                                                      ],
+                                                      favouriteIcon)
+                                favouriteIcon.name = favourites.isFavourite(model.stop_id) ? "starred" : "non-starred";
+                            }
+                        }
+                    }
+
                     Image {
+                        id: image
                         anchors {
                             top: parent.top;
                             left: parent.left;
@@ -61,7 +92,7 @@ Rectangle {
                             bottomMargin: labelbackground.height
                         }
                         fillMode: Image.PreserveAspectCrop
-
+                        cache: true
                         source: (settings.searchThumbNum === 0 ?
                                      "https://maps.googleapis.com/maps/api/staticmap?" +
                                      "center=" + stop_lat + "," + stop_lon +

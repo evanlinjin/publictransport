@@ -17,6 +17,7 @@ Component {
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap
             fontSize: "small"
+            color: UbuntuColors.darkGrey
         }
 
         //Label {text: i18n.tr("Service Provider");}

@@ -152,7 +152,7 @@ Page {
 
                 delegate: ListItem.Subtitled {
                     id: listDelegate
-                    progression: true
+                    progression: false
                     visible: index <= searchNum
                     height: visible ? units.gu(7) : 0
 
@@ -177,25 +177,25 @@ Page {
                     text: model.stop_name //model.stop_code
                     subText: "Code: " + model.stop_code
 
-//                    Icon {
-//                        id: favouriteIcon
-//                        height: units.gu(4); width: units.gu(4);
-//                        anchors.verticalCenter: parent.verticalCenter;
-//                        anchors.right: parent.right;
-//                        anchors.rightMargin: units.gu(0);
-//                        name: favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
+                    Icon {
+                        id: favouriteIcon
+                        height: units.gu(4); width: units.gu(4);
+                        anchors.verticalCenter: parent.verticalCenter;
+                        anchors.right: parent.right;
+                        anchors.rightMargin: units.gu(0);
+                        name: favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
 
-//                        MouseArea {
-//                            anchors.fill: parent
+                        MouseArea {
+                            anchors.fill: parent
 
-//                            onClicked: {
-//                                Haptics.play({duration: 25, attackIntensity: 0.7});
-//                                favourites.toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon])
-//                                favouriteIcon.name = favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
-//                                favourites.reloadList();
-//                            }
-//                        }
-//                    }
+                            onClicked: {
+                                Haptics.play({duration: 25, attackIntensity: 0.7});
+                                favourites.toggleFavourite(stop_id, [stop_name, stop_code, stop_lat, stop_lon])
+                                favouriteIcon.name = favourites.isFavourite(model.stop_id) ? "starred" : "non-starred"
+                                favourites.reloadList();
+                            }
+                        }
+                    }
 
                     Component.onCompleted: setAt(false);
                     Component.onDestruction: setAt(false);

@@ -21,6 +21,7 @@ Component {
             id: selectorDelegate
             OptionSelectorDelegate {
                 text: name;
+                //fontColor: UbuntuColors.darkGrey
                 //subText: description;
                 height: units.gu(6);
                 constrainImage: true;

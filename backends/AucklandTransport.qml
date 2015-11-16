@@ -18,7 +18,7 @@ Item {
     /*                                                         SEARCH SECTION */
     /**************************************************************************/
 
-    // -------------------------------------------------------- JSON LIST MODELS
+    // ----------------------------------------------------------- JSONLISTMODEL
 
     JSONListModel {
         id: nameSearch
@@ -27,20 +27,6 @@ Item {
 
         query: "$.response[*]"
         Component.onCompleted: console.log("NAME SEARCH ADDRESS:" + nameSearch.source)
-    }
-
-    JSONListModel {
-        id: locationSearch
-        source: "https://api.at.govt.nz/v1/gtfs/stops/geosearch?lat=" + settings.current_lat +
-                "&lng=" + settings.current_lon +
-                "&distance=" + settings.searchRadius +
-                "&api_key=" + apiKey.at
-
-        query: "$.response[*]"
-        Component.onCompleted: {
-            console.log("LOCATION SEARCH ADDRESS:" + locationSearch.source)
-
-        }
     }
 
     /**************************************************************************/
@@ -117,11 +103,9 @@ Item {
             return
         }
 
+        // TODO: This needs to be implemented properly.
         function removeFavourite(stop_id) {
-            console.log("Attempting to delete bus stop " + stop_id + " from favourites.")
-            console.log(JSON.stringify(favouritesDatabase.getDoc(stop_id)))
             addFavourite(stop_id, ["", "", "", ""])
-            console.log("FAVOURITES NOW: " + favouritesDatabase.listDocs())
             return
         }
 
@@ -136,13 +120,43 @@ Item {
     /*                                                         NEARBY SECTION */
     /**************************************************************************/
 
-    // --------------------------------------------- NEARBY DATABASE & LISTMODEL
+    // ---------------------------------------------------- NEARBY JSONLISTMODEL
 
-//    U1db.Database {
-//        id: nearbyDatabase;
-//        path: "favouritesDatabase3";
-//        Component.onCompleted: favourites.reloadList();
-//    }
+    JSONListModel {
+        id: locationSearch
+        source: "https://api.at.govt.nz/v1/gtfs/stops/geosearch?lat=" + settings.current_lat +
+                "&lng=" + settings.current_lon +
+                "&distance=" + settings.searchRadius +
+                "&api_key=" + apiKey.at
+
+        query: "$.response[*]"
+
+        Component.onCompleted: {
+            console.log("LOCATION SEARCH ADDRESS:" + locationSearch.source)
+        }
+
+        function reloadList() {
+            root.getLocation()
+            locationSearch.source = "";
+            locationSearch.query = "";
+            locationSearch.model.clear();
+            timer.running = true;
+        }
+
+        Timer {
+            id: timer
+            interval: 1;
+            running: false;
+            repeat: false;
+            onTriggered: {
+                locationSearch.source = "https://api.at.govt.nz/v1/gtfs/stops/geosearch?lat=" + settings.current_lat +
+                        "&lng=" + settings.current_lon +
+                        "&distance=" + settings.searchRadius +
+                        "&api_key=" + apiKey.at
+                locationSearch.query = "$.response[*]"
+            }
+        }
+    }
 
 
     /**************************************************************************/
