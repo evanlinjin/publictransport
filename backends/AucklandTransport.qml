@@ -162,10 +162,26 @@ Item {
 
 
     /**************************************************************************/
+    /*                                                  REALTIMEBOARD SECTION */
+    /**************************************************************************/
+
+    // ------------------------------------------------- REALTIMEBOARD LISTMODEL
+
+    JSONListModel {
+        id: jsonRoutesList
+        source: "https://api.at.govt.nz/v1/gtfs/stops/search/" + root.searchQuery +
+                "?api_key=" + apiKey.at
+
+        query: "$.response[*]"
+        Component.onCompleted: console.log("NAME SEARCH ADDRESS:" + nameSearch.source)
+    }
+
+
+    /**************************************************************************/
     /*                                                  NOTIFICATIONS SECTION */
     /**************************************************************************/
 
-    // -------------------------------------------------- NOTIFICATIOS LISTMODEL
+    // ------------------------------------------------- NOTIFICATIONS LISTMODEL
 
     ListModel {
         id: notifications

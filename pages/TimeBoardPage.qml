@@ -58,36 +58,6 @@ Page {
         contents: CustomHeader{mainTitle: stop_code; iconName: "location";}
     }
 
-//    Image {
-//        id: headerImage
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//            bottom: parent.top
-//        }
-//        source: topImage.source
-//        verticalAlignment: Image.AlignTop
-//        fillMode: Image.PreserveAspectCrop
-//    }
-
-//    MaskedBlur {
-//        id: headerBlur
-//        anchors.fill: headerImage
-//        source: topImage
-//        maskSource: topImage
-//        radius: 16
-//        samples: 24
-//        fast: true
-//        cached: false
-//        z: flickable + 100
-//    }
-
-//    ColorOverlay {
-//        anchors.fill: headerImage
-//        source: headerBlur
-//        color: "#aaffffff"
-//    }
-
     //---------------------------------------------------------- BODY DEFINITION
 
     Flickable {
@@ -137,7 +107,30 @@ Page {
         UbuntuListView {
             id: timeBoard
             width: parent.width
+            height: units.gu(6) * count
+            anchors.top: topImage.bottom
 
+            headerPositioning: ListView.OverlayHeader
+
+            header: Row {
+                width: page.width; height: units.gu(4)
+                anchors.fill: parent
+                ListItems.Header{
+                    text: i18n.tr("Route")
+                }
+                ListItems.Header{
+                    anchors.leftMargin: units.gu(8)
+                    text: i18n.tr("Destination")
+                }
+                ListItems.Header{
+                    anchors.leftMargin: parent.width - units.gu(16)
+                    text: i18n.tr("Sched")
+                }
+                ListItems.Header{
+                    anchors.leftMargin: parent.width - units.gu(8)
+                    text: i18n.tr("Due")
+                }
+            }
         }
     }
 
