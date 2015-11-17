@@ -19,13 +19,17 @@ Page {
 
     //----------------------------------------------------- COMPONENT PROPERTIES
     Component.objectName: stop_id
-    Component.onObjectNameChanged:
+    Component.onObjectNameChanged: {
         favouritesAction.iconName = favourites.isFavourite(stop_id) ?
             "starred" : "non-starred";
+        root.stopTimeBoard.getRoutes(stop_id)
+    }
 
     //---------------------------------------------------------------- FUNCTIONS
     function reload() {
+        root.stopTimeBoard.getRoutes(stop_id)
         page.update()
+        timeBoard.update()
     }
 
     //-------------------------------------------------------- HEADER DEFINITION
@@ -112,24 +116,29 @@ Page {
 
             headerPositioning: ListView.OverlayHeader
 
-            header: Row {
-                width: page.width; height: units.gu(4)
-                anchors.fill: parent
-                ListItems.Header{
-                    text: i18n.tr("Route")
-                }
-                ListItems.Header{
-                    anchors.leftMargin: units.gu(8)
-                    text: i18n.tr("Destination")
-                }
-                ListItems.Header{
-                    anchors.leftMargin: parent.width - units.gu(16)
-                    text: i18n.tr("Sched")
-                }
-                ListItems.Header{
-                    anchors.leftMargin: parent.width - units.gu(8)
-                    text: i18n.tr("Due")
-                }
+//            header: Row {
+//                width: page.width; height: units.gu(4)
+//                //anchors.fill: parent
+//                ListItems.Header{
+//                    text: i18n.tr("Route")
+//                }
+//                ListItems.Header{
+//                    //anchors.leftMargin: units.gu(8)
+//                    text: i18n.tr("Destination")
+//                }
+//                ListItems.Header{
+//                    //anchors.leftMargin: parent.width - units.gu(16)
+//                    text: i18n.tr("Sched")
+//                }
+//                ListItems.Header{
+//                    //anchors.leftMargin: parent.width - units.gu(8)
+//                    text: i18n.tr("Due")
+//                }
+//            }
+
+            model: root.stopTimeBoard
+            delegate: ListItems.Subtitled {
+                text: route_short_name + " " + trip_headsign + " " + departure_time_seconds
             }
         }
     }

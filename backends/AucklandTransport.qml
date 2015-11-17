@@ -13,6 +13,8 @@ Item {
     property ListModel favourites: favourites
     property ListModel notifications: notifications
 
+    property ListModel stopTimeBoard: stopTimeBoard
+
 
     /**************************************************************************/
     /*                                                         SEARCH SECTION */
@@ -180,42 +182,93 @@ Item {
     ListModel {
         id: stopTimeBoard
 
-        function getRoutes(stop_id) {
+        function getRoutes(stop_id) { var i, j;
+
+            root.whetherLoadingStopTimeBoard = true
+            console.log("Getting Routes...")
 
             // Change JSON to get "Stop Times by stop_id"
-            jsonTimeBoard.source = "api.at.govt.nz/v1/gtfs/stopTimes/stopId/" +
+            jsonTimeBoard.source = "";
+            jsonTimeBoard.query = "";
+            jsonTimeBoard.model.clear();
+            jsonTimeBoard.source = "https://api.at.govt.nz/v1/gtfs/stopTimes/stopId/" +
                     stop_id + "?api_key=" + apiKey.at
+            locationSearch.query = "$.response[*]"
+            console.log("New JSON: " + jsonTimeBoard.source)
 
             // Determine the current time in seconds and "appropriate times".
-            var timeInSeconds = Date.prototype.getHours() * 3600 +
-                    Date.prototype.getMinutes() * 60 +
-                    Date.prototype.getSeconds()
+            var today = new Date(Date.now());
+            var timeInSeconds = today.getHours() * 3600 +
+                    today.getMinutes() * 60 +
+                    today.getSeconds()
 
-            var listStartTime = timeInSeconds - 120; // This probably needs to be changed later, considering how unreliable Auckland Transport is.
-            var listEndTime = timeInSeconds + 10800; // + 3hrs
+            listStartTime = timeInSeconds - 120; // This probably needs to be changed later, considering how unreliable Auckland Transport is.
+            listEndTime = timeInSeconds + 10800; // + 3hrs
+
+            console.log("listStartTime: " + listStartTime)
+            console.log("listEndTime: " + listEndTime)
+
+            stopTimer_a.running = true;
+        }
+    }
+
+    // ---------------------------------------------------- REALTIMEBOARD TIMERS
+    property int listStartTime: 0;
+    property int listEndTime: 0;
+    property int i: 0;
+    property int j: 0;
+
+    Timer {
+        id: stopTimer_a
+        interval: 10;
+        running: false;
+        repeat: true;
+        onTriggered: {
+            console.log("Trying...")
 
             // Continue only if JSONListModel is properly populated.
-            for (var i = 0; i < 5; i++) {
-                if (jsonTimeBoard.model.count > 0) {
+            if (jsonTimeBoard.model.count > 0) {
+                console.log("OK!")
+                var tempDepartureTime
+                for (i = 0; i < jsonTimeBoard.model.count; i++) {
 
                     // Append appropriate elements of "Stop Times by stop_id" to
                     // listModel. (i.e. between the appropriate time zones.)
-                    var tempDepartureTime
-                    for (var j = 0; j < jsonTimeBoard.model.count; j++) {
-                        tempDepartureTime = jsonTimeBoard.model.get(i).departure_time_seconds;
-                        if (tempDepartureTime >= listStartTime && tempDepartureTime <= listEndTime) {
-                            stopTimeBoard.append(jsonTimeBoard.model.get(i));
+                    tempDepartureTime = jsonTimeBoard.model.get(i).departure_time_seconds;
+                    if (tempDepartureTime >= listStartTime && tempDepartureTime <= listEndTime) {
+                        stopTimeBoard.append(jsonTimeBoard.model.get(i));
+                    }
+                }
+
+                // Sort list by departure_time_seconds
+                var comesFirst;
+                for (i = 0; i < stopTimeBoard.count - 1; i++) {
+                    comesFirst = i;
+                    for (j = i + 1; j < stopTimeBoard.count; j++) {
+                        if (stopTimeBoard.get(j).departure_time_seconds < stopTimeBoard.get(comesFirst).departure_time_seconds) {
+                            comesFirst = j;
                         }
                     }
-                    break;
+                    stopTimeBoard.move(j, i, 1);
                 }
-            }
 
-            // Sort list by departure_time_seconds (nearest to furthest)
-            for (i = 0; i < jsonTimeBoard.model.count; i++) {
+                // Stop timer
+                stopTimer_a.running = false;
             }
+            console.log("FAIL!")
         }
     }
+
+    Timer {
+        id: stopTimer_b
+        interval: 10;
+        running: false;
+        repeat: true;
+        onTriggered {
+
+        }
+    }
+
 
     /**************************************************************************/
     /*                                                  NOTIFICATIONS SECTION */

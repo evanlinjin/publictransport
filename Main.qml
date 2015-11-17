@@ -27,6 +27,7 @@ MainView {
     property var searchHistory: []
 
     property bool whetherLoadingNearby: false
+    property bool whetherLoadingStopTimeBoard: false
 
     property string searchQuery: ""
 
@@ -35,6 +36,14 @@ MainView {
 
     property ListModel favourites: aucklandTransportBackend.favourites
     property ListModel notifications: aucklandTransportBackend.notifications
+
+    // Usage: root.stopTimeBoard.getRoutes(stop_id)
+    //        model    : root.stopTimeBoard
+    //        variables: ROUTE       - route_short_name
+    //                   DESTINATION - trip_headsign
+    //                   SCHED.      - departure_time_seconds (Needs format)
+    //                   DUE         - "UNAVALIABE" (Need to figure this feature out...)
+    property ListModel stopTimeBoard: aucklandTransportBackend.stopTimeBoard
 
 
     width: units.gu(100)
