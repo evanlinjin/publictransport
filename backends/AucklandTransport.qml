@@ -181,7 +181,6 @@ Item {
         id: stopTimeBoard
 
         function getRoutes(stop_id) {
-            var i;
 
             // Change JSON to get "Stop Times by stop_id"
             jsonTimeBoard.source = "api.at.govt.nz/v1/gtfs/stopTimes/stopId/" +
@@ -196,17 +195,24 @@ Item {
             var listEndTime = timeInSeconds + 10800; // + 3hrs
 
             // Continue only if JSONListModel is properly populated.
-            for (i = 0; i < 5; i++) {
+            for (var i = 0; i < 5; i++) {
                 if (jsonTimeBoard.model.count > 0) {
 
                     // Append appropriate elements of "Stop Times by stop_id" to
                     // listModel. (i.e. between the appropriate time zones.)
-                    for (i = 0; i < jsonTimeBoard.model.count; i++) {
-                        //if (jsonTimeBoard.model.get(i).departure_time_seconds)
+                    var tempDepartureTime
+                    for (var j = 0; j < jsonTimeBoard.model.count; j++) {
+                        tempDepartureTime = jsonTimeBoard.model.get(i).departure_time_seconds;
+                        if (tempDepartureTime >= listStartTime && tempDepartureTime <= listEndTime) {
+                            stopTimeBoard.append(jsonTimeBoard.model.get(i));
+                        }
                     }
-
                     break;
                 }
+            }
+
+            // Sort list by departure_time_seconds (nearest to furthest)
+            for (i = 0; i < jsonTimeBoard.model.count; i++) {
             }
         }
     }
