@@ -165,17 +165,51 @@ Item {
     /*                                                  REALTIMEBOARD SECTION */
     /**************************************************************************/
 
-    // ------------------------------------------------- REALTIMEBOARD LISTMODEL
+    // --------------------------------------------- REALTIMEBOARD JSONLISTMODEL
 
     JSONListModel {
-        id: jsonRoutesList
-        source: "https://api.at.govt.nz/v1/gtfs/stops/search/" + root.searchQuery +
+        id: jsonTimeBoard
+        source: "api.at.govt.nz/v1/gtfs/stopTimes/stopId/" + "0000" +
                 "?api_key=" + apiKey.at
 
         query: "$.response[*]"
-        Component.onCompleted: console.log("NAME SEARCH ADDRESS:" + nameSearch.source)
     }
 
+    // ------------------------------------------------- REALTIMEBOARD LISTMODEL
+
+    ListModel {
+        id: stopTimeBoard
+
+        function getRoutes(stop_id) {
+            var i;
+
+            // Change JSON to get "Stop Times by stop_id"
+            jsonTimeBoard.source = "api.at.govt.nz/v1/gtfs/stopTimes/stopId/" +
+                    stop_id + "?api_key=" + apiKey.at
+
+            // Determine the current time in seconds and "appropriate times".
+            var timeInSeconds = Date.prototype.getHours() * 3600 +
+                    Date.prototype.getMinutes() * 60 +
+                    Date.prototype.getSeconds()
+
+            var listStartTime = timeInSeconds - 120; // This probably needs to be changed later, considering how unreliable Auckland Transport is.
+            var listEndTime = timeInSeconds + 10800; // + 3hrs
+
+            // Continue only if JSONListModel is properly populated.
+            for (i = 0; i < 5; i++) {
+                if (jsonTimeBoard.model.count > 0) {
+
+                    // Append appropriate elements of "Stop Times by stop_id" to
+                    // listModel. (i.e. between the appropriate time zones.)
+                    for (i = 0; i < jsonTimeBoard.model.count; i++) {
+                        //if (jsonTimeBoard.model.get(i).departure_time_seconds)
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
 
     /**************************************************************************/
     /*                                                  NOTIFICATIONS SECTION */
