@@ -290,6 +290,7 @@ Item {
 
                     jsonTimeBoard.source = "https://api.at.govt.nz/v1/gtfs/trips/tripId/" +
                             stopTimeBoard.get(i).trip_id + "?api_key=" + apiKey.at
+                    console.log("jsonTimeBoard.source is now: " + jsonTimeBoard.source)
                 }
 
                 // Append additional information if possible.
@@ -309,8 +310,7 @@ Item {
                 i = 0;
                 jsonTimeBoard.source = "";
                 jsonTimeBoard.model.clear();
-                //stopTimer_c.running = true;
-
+                stopTimer_c.running = true;
                 stopTimer_b.running = false;
             }
         }
@@ -324,24 +324,33 @@ Item {
         repeat: true;
         onTriggered: {
             // Change JSON Model if needed
+            //console.log("i is: " + i)
             if (i < stopTimeBoard.count) {
 
-                if (jsonTimeBoard.source !== "api.at.govt.nz/v1/gtfs/routes/routeId/" +
-                        stopTimeBoard.get(i).trip_id + "?api_key=" + apiKey.at) {
+                if (jsonTimeBoard.source !== "https://api.at.govt.nz/v1/gtfs/routes/routeId/" +
+                        stopTimeBoard.get(i).route_id + "?api_key=" + apiKey.at) {
 
                     jsonTimeBoard.source = "";
                     jsonTimeBoard.model.clear();
 
-                    jsonTimeBoard.source = "api.at.govt.nz/v1/gtfs/routes/routeId/" +
-                            stopTimeBoard.get(i).trip_id + "?api_key=" + apiKey.at
+                    jsonTimeBoard.source = "https://api.at.govt.nz/v1/gtfs/routes/routeId/" +
+                            stopTimeBoard.get(i).route_id + "?api_key=" + apiKey.at
+                    console.log("jsonTimeBoard.source is now: " + jsonTimeBoard.source)
                 }
 
                 // Append additional information if possible.
                 if (jsonTimeBoard.model.count > 0) {
-
+                    console.log("Appending... " + jsonTimeBoard.model.get(0).route_short_name + " to " + i);
                     stopTimeBoard.setProperty(i, "route_short_name", jsonTimeBoard.model.get(0).route_short_name);
+                    console.log("route_short_name is now: " + stopTimeBoard.get(i).route_short_name);
+
+                    console.log("Appending... " + jsonTimeBoard.model.get(0).route_color + " to " + i);
                     stopTimeBoard.setProperty(i, "route_color", jsonTimeBoard.model.get(0).route_color);
+                    console.log("route_color is now: " + stopTimeBoard.get(i).route_color);
+
+                    console.log("Appending... " + jsonTimeBoard.model.get(0).route_text_color + " to " + i);
                     stopTimeBoard.setProperty(i, "route_text_color", jsonTimeBoard.model.get(0).route_text_color);
+                    console.log("route_text_color is now: " + stopTimeBoard.get(i).route_text_color);
 
                     i++
                 }
@@ -350,7 +359,7 @@ Item {
                 jsonTimeBoard.source = "";
                 jsonTimeBoard.model.clear();
                 root.whetherLoadingStopTimeBoard = false;
-                stopTimeBoard.sync()
+                stopTimeBoard.sync();
                 stopTimer_c.running = false;
             }
         }

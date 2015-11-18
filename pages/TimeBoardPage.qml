@@ -141,7 +141,7 @@ Page {
             model: root.stopTimeBoard
             delegate: ListItems.Subtitled {
                 height: units.gu(4)
-                text: model.trip_headsign + " " + model.departure_time_seconds
+                text: model.route_short_name + " " + model.trip_headsign + " " + model.departure_time_seconds
             }
         }
     }
