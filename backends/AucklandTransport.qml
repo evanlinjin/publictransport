@@ -259,7 +259,7 @@ Item {
                 }
 
                 // Remove excessive results
-                stopTimeBoard.remove(10, stopTimeBoard.count - 10);
+                stopTimeBoard.remove(10, stopTimeBoard.count - 10); ///////////////////////////////////////////////////
 
                 // Reset JSON Model, i & j.
                 jsonTimeBoard.source = "";

@@ -64,11 +64,7 @@ Page {
 
     Flickable {
         id: flickable
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
+        anchors.fill: page
         width: parent.width
         height: parent.height
         contentWidth: parent.width
@@ -109,33 +105,41 @@ Page {
         UbuntuListView {
             id: timeBoard
             width: parent.width
-            height: units.gu(4) * count
+            height: units.gu(4) * count + units.gu(3)
             anchors.top: topImage.bottom
+            clip: true;
+            interactive: false;
 
-            model: root.stopTimeBoard
-            delegate: ListItems.Standard {
-                height: units.gu(4)
+            headerPositioning: ListView.OverlayHeader
+            header: ListItems.Header {
+                height: units.gu(3)
                 Row {
                     anchors.fill: parent
-                    spacing: units.gu(1)
-                    Rectangle {height: parent.height; width: units.gu(1); color: "#" + model.route_color;}
+                    spacing: units.gu(0.5)
+                    Rectangle {height: parent.height - units.gu(0.25); width: units.gu(0.5); color: "transparent";}
 
                     Rectangle {
-                        height: parent.height; width: units.gu(6);
+                        height: parent.height; width: units.gu(7);
                         color: "transparent";
                         Label {
                             anchors.fill: parent
-                            text: model.route_short_name
+                            text: "ROUTE"
                             verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                            fontSize: "small"
+                            font.bold: true
                         }
                     }
                     Rectangle {
-                        height: parent.height; width: parent.width - units.gu(23);
+                        height: parent.height; width: parent.width - units.gu(22);
                         color: "transparent";
                         Label {
                             anchors.fill: parent
-                            text: model.trip_headsign
+                            text: "DESTINATION"
                             verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                            fontSize: "small"
+                            font.bold: true
                         }
                     }
                     Rectangle {
@@ -143,8 +147,66 @@ Page {
                         color: "transparent";
                         Label {
                             anchors.fill: parent
-                            text: model.departure_time_seconds
+                            text: "SCHED."
                             verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                            fontSize: "small"
+                            font.bold: true
+                        }
+                    }
+                    Rectangle {
+                        height: parent.height; width: units.gu(4);
+                        color: "transparent";
+                        Label {
+                            anchors.fill: parent
+                            text: "DUE"
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignRight
+                            elide: Text.ElideRight
+                            fontSize: "small"
+                            font.bold: true
+                        }
+                    }
+                    //Rectangle {height: parent.height; width: units.gu(1);}
+                }
+            }
+
+            model: root.stopTimeBoard
+            delegate: ListItems.Standard {
+                height: units.gu(4)
+                Row {
+                    anchors.fill: parent
+                    spacing: units.gu(0.5)
+                    Rectangle {height: parent.height - units.gu(0.25); width: units.gu(0.5); color: "#" + model.route_color;}
+
+                    Rectangle {
+                        height: parent.height; width: units.gu(7);
+                        color: "transparent";
+                        Label {
+                            anchors.fill: parent
+                            text: model.route_short_name
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+                    }
+                    Rectangle {
+                        height: parent.height; width: parent.width - units.gu(22);
+                        color: "transparent";
+                        Label {
+                            anchors.fill: parent
+                            text: model.trip_headsign
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+                    }
+                    Rectangle {
+                        height: parent.height; width: units.gu(7);
+                        color: "transparent";
+                        Label {
+                            anchors.fill: parent
+                            text: model.departure_time.substring(0, 5);
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
                         }
                     }
                     Rectangle {
@@ -154,6 +216,8 @@ Page {
                             anchors.fill: parent
                             text: "~"
                             verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignRight
+                            elide: Text.ElideRight
                         }
                     }
                     //Rectangle {height: parent.height; width: units.gu(1);}
@@ -166,16 +230,54 @@ Page {
     Timer {
         id: favouriteTimer
         interval: 1000;
-        running: true;
+        running: false;
         repeat: true;
         onTriggered: {
             favouritesAction.iconName =
                     favourites.isFavourite(stop_id) ?
                         "starred" : "non-starred";
             console.log("ICON REFRESHED!")
+
+        }
+    }
+
+    Timer {
+        id: updateTimer
+        interval: 3000;
+        running: true;
+        repeat: true;
+        onTriggered: {
             timeBoard.model = 0
-            //timeBoard.update()
             timeBoard.model = root.stopTimeBoard
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
