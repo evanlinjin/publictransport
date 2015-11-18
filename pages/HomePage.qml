@@ -129,6 +129,6 @@ PageWithBottomEdge {
     ////////////////////////////////////////////////////////////////////////////
 
     bottomEdgeTitle: i18n.tr("Search")
-    bottomEdgePageComponent: SimpleSearchPage {id: simpleSearchPage; visible: true;}
+    bottomEdgePageComponent: SimpleSearchPage {id: simpleSearchPage; visible: false;}
 }
 
