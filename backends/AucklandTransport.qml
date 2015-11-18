@@ -185,6 +185,9 @@ Item {
         function getRoutes(stop_id) { var i, j;
 
             root.whetherLoadingStopTimeBoard = true
+            stopTimer_a.running = false;
+            stopTimer_b.running = false;
+            stopTimer_c.running = false;
             console.log("Getting Routes...")
 
             // Change JSON to get "Stop Times by stop_id"
@@ -254,6 +257,9 @@ Item {
                     console.log("MOVING: " + comesFirst + " to " + i)
                     stopTimeBoard.move(comesFirst, i, 1);
                 }
+
+                // Remove excessive results
+                stopTimeBoard.remove(10, stopTimeBoard.count - 10);
 
                 // Reset JSON Model, i & j.
                 jsonTimeBoard.source = "";
@@ -359,7 +365,6 @@ Item {
                 jsonTimeBoard.source = "";
                 jsonTimeBoard.model.clear();
                 root.whetherLoadingStopTimeBoard = false;
-                stopTimeBoard.sync();
                 stopTimer_c.running = false;
             }
         }

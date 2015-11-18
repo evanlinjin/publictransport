@@ -27,11 +27,7 @@ Page {
 
     //---------------------------------------------------------------- FUNCTIONS
     function reload() {
-        //root.stopTimeBoard.getRoutes(stop_id)
-        page.update()
-        timeBoard.model = 0
-        timeBoard.update()
-        timeBoard.model = root.stopTimeBoard
+        root.stopTimeBoard.getRoutes(stop_id)
     }
 
     //-------------------------------------------------------- HEADER DEFINITION
@@ -116,32 +112,52 @@ Page {
             height: units.gu(4) * count
             anchors.top: topImage.bottom
 
-            headerPositioning: ListView.OverlayHeader
-
-//            header: Row {
-//                width: page.width; height: units.gu(4)
-//                //anchors.fill: parent
-//                ListItems.Header{
-//                    text: i18n.tr("Route")
-//                }
-//                ListItems.Header{
-//                    //anchors.leftMargin: units.gu(8)
-//                    text: i18n.tr("Destination")
-//                }
-//                ListItems.Header{
-//                    //anchors.leftMargin: parent.width - units.gu(16)
-//                    text: i18n.tr("Sched")
-//                }
-//                ListItems.Header{
-//                    //anchors.leftMargin: parent.width - units.gu(8)
-//                    text: i18n.tr("Due")
-//                }
-//            }
-
             model: root.stopTimeBoard
-            delegate: ListItems.Subtitled {
+            delegate: ListItems.Standard {
                 height: units.gu(4)
-                text: model.route_short_name + " " + model.trip_headsign + " " + model.departure_time_seconds
+                Row {
+                    anchors.fill: parent
+                    spacing: units.gu(1)
+                    Rectangle {height: parent.height; width: units.gu(1); color: "#" + model.route_color;}
+
+                    Rectangle {
+                        height: parent.height; width: units.gu(6);
+                        color: "transparent";
+                        Label {
+                            anchors.fill: parent
+                            text: model.route_short_name
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                    Rectangle {
+                        height: parent.height; width: parent.width - units.gu(23);
+                        color: "transparent";
+                        Label {
+                            anchors.fill: parent
+                            text: model.trip_headsign
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                    Rectangle {
+                        height: parent.height; width: units.gu(7);
+                        color: "transparent";
+                        Label {
+                            anchors.fill: parent
+                            text: model.departure_time_seconds
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                    Rectangle {
+                        height: parent.height; width: units.gu(4);
+                        color: "transparent";
+                        Label {
+                            anchors.fill: parent
+                            text: "~"
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                    //Rectangle {height: parent.height; width: units.gu(1);}
+                }
             }
         }
     }
@@ -150,13 +166,16 @@ Page {
     Timer {
         id: favouriteTimer
         interval: 1000;
-        running: false;
+        running: true;
         repeat: true;
         onTriggered: {
             favouritesAction.iconName =
                     favourites.isFavourite(stop_id) ?
                         "starred" : "non-starred";
             console.log("ICON REFRESHED!")
+            timeBoard.model = 0
+            //timeBoard.update()
+            timeBoard.model = root.stopTimeBoard
         }
     }
 }
