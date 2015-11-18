@@ -27,9 +27,11 @@ Page {
 
     //---------------------------------------------------------------- FUNCTIONS
     function reload() {
-        root.stopTimeBoard.getRoutes(stop_id)
+        //root.stopTimeBoard.getRoutes(stop_id)
         page.update()
+        timeBoard.model = 0
         timeBoard.update()
+        timeBoard.model = root.stopTimeBoard
     }
 
     //-------------------------------------------------------- HEADER DEFINITION
@@ -111,7 +113,7 @@ Page {
         UbuntuListView {
             id: timeBoard
             width: parent.width
-            height: units.gu(6) * count
+            height: units.gu(4) * count
             anchors.top: topImage.bottom
 
             headerPositioning: ListView.OverlayHeader
@@ -138,7 +140,8 @@ Page {
 
             model: root.stopTimeBoard
             delegate: ListItems.Subtitled {
-                text: route_short_name + " " + trip_headsign + " " + departure_time_seconds
+                height: units.gu(4)
+                text: model.trip_headsign + " " + model.departure_time_seconds
             }
         }
     }

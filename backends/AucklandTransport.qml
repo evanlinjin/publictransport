@@ -193,7 +193,7 @@ Item {
             jsonTimeBoard.model.clear();
             jsonTimeBoard.source = "https://api.at.govt.nz/v1/gtfs/stopTimes/stopId/" +
                     stop_id + "?api_key=" + apiKey.at
-            locationSearch.query = "$.response[*]"
+            jsonTimeBoard.query = "$.response[*]"
             console.log("New JSON: " + jsonTimeBoard.source)
 
             // Determine the current time in seconds and "appropriate times".
@@ -220,7 +220,7 @@ Item {
 
     Timer {
         id: stopTimer_a
-        interval: 10;
+        interval: 1;
         running: false;
         repeat: true;
         onTriggered: {
@@ -228,6 +228,8 @@ Item {
 
             // Continue only if JSONListModel is properly populated.
             if (jsonTimeBoard.model.count > 0) {
+                // Clear model
+                stopTimeBoard.clear();
                 console.log("OK!")
                 var tempDepartureTime
                 for (i = 0; i < jsonTimeBoard.model.count; i++) {
@@ -249,26 +251,110 @@ Item {
                             comesFirst = j;
                         }
                     }
-                    stopTimeBoard.move(j, i, 1);
+                    console.log("MOVING: " + comesFirst + " to " + i)
+                    stopTimeBoard.move(comesFirst, i, 1);
                 }
 
-                // Stop timer
+                // Reset JSON Model, i & j.
+                jsonTimeBoard.source = "";
+                jsonTimeBoard.model.clear();
+                i = 0; j = 0;
+
+
+                // Start next timer, stop current.
+                stopTimer_b.running = true;
+                console.log("Stopping timer...")
                 stopTimer_a.running = false;
+                console.log("Timer status: " + stopTimer_a.running)
+                return
             }
             console.log("FAIL!")
         }
     }
 
+    /* FOR: "Trips by Trip ID" - get trip_headsign & route_id */
     Timer {
         id: stopTimer_b
-        interval: 10;
+        interval: 1;
         running: false;
         repeat: true;
-        onTriggered {
+        onTriggered: {
+            // Change JSON Model if needed
+            if (i < stopTimeBoard.count) {
 
+                if (jsonTimeBoard.source !== "https://api.at.govt.nz/v1/gtfs/trips/tripId/" +
+                        stopTimeBoard.get(i).trip_id + "?api_key=" + apiKey.at) {
+
+                    jsonTimeBoard.source = "";
+                    jsonTimeBoard.model.clear();
+
+                    jsonTimeBoard.source = "https://api.at.govt.nz/v1/gtfs/trips/tripId/" +
+                            stopTimeBoard.get(i).trip_id + "?api_key=" + apiKey.at
+                }
+
+                // Append additional information if possible.
+                if (jsonTimeBoard.model.count > 0) {
+
+                    console.log("Appending... " + jsonTimeBoard.model.get(0).trip_headsign + " to " + i)
+                    stopTimeBoard.setProperty(i, "trip_headsign", jsonTimeBoard.model.get(0).trip_headsign);
+                    console.log("trip_headsign is now: " + stopTimeBoard.get(i).trip_headsign)
+
+                    console.log("Appending... " + jsonTimeBoard.model.get(0).route_id + " to " + i)
+                    stopTimeBoard.setProperty(i, "route_id", jsonTimeBoard.model.get(0).route_id)
+                    console.log("route_id is now: " + stopTimeBoard.get(i).route_id)
+
+                    i++;
+                }
+            } else {
+                i = 0;
+                jsonTimeBoard.source = "";
+                jsonTimeBoard.model.clear();
+                //stopTimer_c.running = true;
+
+                stopTimer_b.running = false;
+            }
         }
     }
 
+    /* FOR: "Routes list filtered by ID" - get route_short_name, route_color & route_text_color */
+    Timer {
+        id: stopTimer_c
+        interval: 1;
+        running: false;
+        repeat: true;
+        onTriggered: {
+            // Change JSON Model if needed
+            if (i < stopTimeBoard.count) {
+
+                if (jsonTimeBoard.source !== "api.at.govt.nz/v1/gtfs/routes/routeId/" +
+                        stopTimeBoard.get(i).trip_id + "?api_key=" + apiKey.at) {
+
+                    jsonTimeBoard.source = "";
+                    jsonTimeBoard.model.clear();
+
+                    jsonTimeBoard.source = "api.at.govt.nz/v1/gtfs/routes/routeId/" +
+                            stopTimeBoard.get(i).trip_id + "?api_key=" + apiKey.at
+                }
+
+                // Append additional information if possible.
+                if (jsonTimeBoard.model.count > 0) {
+
+                    stopTimeBoard.setProperty(i, "route_short_name", jsonTimeBoard.model.get(0).route_short_name);
+                    stopTimeBoard.setProperty(i, "route_color", jsonTimeBoard.model.get(0).route_color);
+                    stopTimeBoard.setProperty(i, "route_text_color", jsonTimeBoard.model.get(0).route_text_color);
+
+                    i++
+                }
+            } else {
+                i = 0;
+                jsonTimeBoard.source = "";
+                jsonTimeBoard.model.clear();
+                root.whetherLoadingStopTimeBoard = false;
+                stopTimeBoard.sync()
+                stopTimer_c.running = false;
+            }
+        }
+    }
 
     /**************************************************************************/
     /*                                                  NOTIFICATIONS SECTION */
