@@ -98,6 +98,37 @@ Page {
                          "&fov=60&heading=" + "45" + "&pitch=0&key="
                      ) +
                     (settings.searchThumbBool ? apiKey.google : "none")
+
+            LinearGradient {
+                anchors.fill: parent
+                start: Qt.point(150, 0)
+                end: Qt.point(150,300)
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0.0
+                        color: Theme.palette.normal.background
+                    }
+                    GradientStop {
+                        position: 0.1
+                        color: "#00000000"
+                    }
+                }
+            }
+            LinearGradient {
+                anchors.fill: parent
+                start: Qt.point(150, 300)
+                end: Qt.point(150,0)
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0.0
+                        color: Theme.palette.normal.background
+                    }
+                    GradientStop {
+                        position: 0.1
+                        color: "#00000000"
+                    }
+                }
+            }
         }
 
         /********************************************************* TIME BOARD */
@@ -110,6 +141,7 @@ Page {
             clip: true;
             interactive: false;
 
+            /* HEADER */
             headerPositioning: ListView.OverlayHeader
             header: ListItems.Header {
                 height: units.gu(3)
@@ -171,6 +203,7 @@ Page {
                 }
             }
 
+            /* BODY */
             model: root.stopTimeBoard
             delegate: ListItems.Standard {
                 height: units.gu(4)
@@ -223,6 +256,12 @@ Page {
                     //Rectangle {height: parent.height; width: units.gu(1);}
                 }
             }
+        }
+        /* LOAD INDICATOR*/
+        ActivityIndicator {
+            id: activityIndicator;
+            anchors.centerIn: parent;
+            running: root.whetherLoadingStopTimeBoard;
         }
     }
 

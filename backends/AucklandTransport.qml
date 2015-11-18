@@ -157,11 +157,20 @@ Item {
                         "&distance=" + settings.searchRadius +
                         "&api_key=" + apiKey.at
                 locationSearch.query = "$.response[*]"
-                root.whetherLoadingNearby = false;
+                nearbyLoadTimer.running = true;
             }
         }
     }
 
+    // ----------------------------------------------------------- NEARBY TIMERS
+
+    Timer {
+        id: nearbyLoadTimer
+        interval: 2000;
+        running: false;
+        repeat: false;
+        onTriggered: root.whetherLoadingNearby = false;
+    }
 
     /**************************************************************************/
     /*                                                  REALTIMEBOARD SECTION */

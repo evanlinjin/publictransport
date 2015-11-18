@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
+import QtGraphicalEffects 1.0
 import Ubuntu.Components 1.3
 import Ubuntu.Components.ListItems 1.3 as ListItem
 import "../components"
@@ -54,7 +55,7 @@ Rectangle {
 
                     Icon {
                         id: favouriteIcon
-                        height: units.gu(3); width: units.gu(3); z: image.z + 1
+                        height: units.gu(3); width: units.gu(3); z: image.z + 2
                         name: favourites.isFavourite(model.stop_id) ? "starred" : "non-starred";
 
                         anchors {
@@ -63,7 +64,7 @@ Rectangle {
                         }
 
                         MouseArea {
-                            z: image.z + 2
+                            z: image.z + 3
                             anchors.fill: parent;
                             onClicked: {
                                 Haptics.play({duration: 25, attackIntensity: 0.7});
@@ -122,6 +123,22 @@ Rectangle {
                                                    'stop_lat': stop_lat,
                                                    'stop_lon': stop_lon,
                                                })
+                            }
+                        }
+
+                        LinearGradient {
+                            anchors.fill: parent
+                            start: Qt.point(300, 0)
+                            end: Qt.point(0,300)
+                            gradient: Gradient {
+                                GradientStop {
+                                    position: 0.0
+                                    color: Theme.palette.normal.background
+                                }
+                                GradientStop {
+                                    position: 0.6
+                                    color: "#00000000"
+                                }
                             }
                         }
                     }

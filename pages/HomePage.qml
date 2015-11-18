@@ -80,10 +80,16 @@ PageWithBottomEdge {
 
                 EmptyState {
                     id: nearbyEmptyState
-                    visible: locationSearch.model.count === 0
+                    visible: locationSearch.model.count === 0 && root.whetherLoadingNearby === false
                     iconName: "location"
                     title: i18n.tr("No results")
                     subTitle: "<i>Refresh</i> the page or check system network and location settings"
+                }
+
+                ActivityIndicator {
+                    id: nearbyActivityIndicator;
+                    anchors.centerIn: parent;
+                    running: root.whetherLoadingNearby && locationSearch.model.count === 0;
                 }
 
 //                Button {
