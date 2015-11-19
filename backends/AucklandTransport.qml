@@ -186,35 +186,42 @@ Item {
         query: "$.response[*]"
     }
 
+    JSONListModel {
+        id: jsonTimeBoard2
+        source: "api.at.govt.nz/v1/gtfs/routes/stopid/" + "0000" +
+                "?api_key=" + apiKey.at
+
+        query: "$.response[*]"
+    }
+
     // ------------------------------------------------- REALTIMEBOARD LISTMODEL
 
     ListModel {
         id: stopTimeBoard
 
         function getRoutes(stop_id) { var i, j;
-
             root.whetherLoadingStopTimeBoard = true
+            jsonTimeBoard.source = jsonTimeBoard2.source = ""
+            jsonTimeBoard.model.clear(); jsonTimeBoard2.model.clear();
             stopTimer_a.running = false;
             stopTimer_b.running = false;
-            stopTimer_c.running = false;
+            stopTimeBoard.clear();
             console.log("Getting Routes...")
 
             // Change JSON to get "Stop Times by stop_id"
-            jsonTimeBoard.source = "";
-            jsonTimeBoard.query = "";
-            jsonTimeBoard.model.clear();
             jsonTimeBoard.source = "https://api.at.govt.nz/v1/gtfs/stopTimes/stopId/" +
                     stop_id + "?api_key=" + apiKey.at
-            jsonTimeBoard.query = "$.response[*]"
             console.log("New JSON: " + jsonTimeBoard.source)
+
+            // Change JSON2 to get "Routes search by stop_id"
+            jsonTimeBoard2.source = "https://api.at.govt.nz/v1/gtfs/routes/stopid/" +
+                    stop_id + "?api_key=" + apiKey.at
+            console.log("New JSON2: " + jsonTimeBoard2.source)
 
             // Determine the current time in seconds and "appropriate times".
             var today = new Date(Date.now());
-            var timeInSeconds = today.getHours() * 3600 +
-                    today.getMinutes() * 60 +
-                    today.getSeconds()
-
-            listStartTime = timeInSeconds - 120; // This probably needs to be changed later, considering how unreliable Auckland Transport is.
+            var timeInSeconds = today.getHours() * 3600 + today.getMinutes() * 60 + today.getSeconds()
+            listStartTime = timeInSeconds - 300; // - 5min
             listEndTime = timeInSeconds + 10800; // + 3hrs
 
             console.log("listStartTime: " + listStartTime)
@@ -222,6 +229,18 @@ Item {
 
             stopTimer_a.running = true;
         }
+
+        function stopLoading() {
+            jsonTimeBoard.source = jsonTimeBoard2.source = ""
+            jsonTimeBoard.model.clear(); jsonTimeBoard2.model.clear();
+            stopTimer_a.running = false;
+            stopTimer_b.running = false;
+            stopTimeBoard.clear();
+            root.whetherLoadingStopTimeBoard = false;
+
+        }
+
+        function reload(stop_id) {stopLoading(); getRoutes(stop_id);}
     }
 
     // ---------------------------------------------------- REALTIMEBOARD TIMERS
@@ -238,8 +257,8 @@ Item {
         onTriggered: {
             console.log("Trying...")
 
-            // Continue only if JSONListModel is properly populated.
-            if (jsonTimeBoard.model.count > 0) {
+            // Continue only if JSONListModels are properly populated.
+            if (jsonTimeBoard.model.count > 0 && jsonTimeBoard2.model.count > 0) {
                 // Clear model
                 stopTimeBoard.clear();
                 console.log("OK!")
@@ -255,9 +274,10 @@ Item {
                 }
 
                 // Sort list by departure_time_seconds
-                var comesFirst;
-                for (i = 0; i < stopTimeBoard.count - 1; i++) {
+                var comesFirst; var original_trip_id;
+                for (i = 0; i < stopTimeBoard.count/* - 1*/; i++) {
                     comesFirst = i;
+
                     for (j = i + 1; j < stopTimeBoard.count; j++) {
                         if (stopTimeBoard.get(j).departure_time_seconds < stopTimeBoard.get(comesFirst).departure_time_seconds) {
                             comesFirst = j;
@@ -268,7 +288,7 @@ Item {
                 }
 
                 // Remove excessive results
-                stopTimeBoard.remove(10, stopTimeBoard.count - 10); ///////////////////////////////////////////////////
+                stopTimeBoard.remove(20, stopTimeBoard.count - 20);
 
                 // Reset JSON Model, i & j.
                 jsonTimeBoard.source = "";
@@ -287,7 +307,6 @@ Item {
         }
     }
 
-    /* FOR: "Trips by Trip ID" - get trip_headsign & route_id */
     Timer {
         id: stopTimer_b
         interval: 1;
@@ -311,70 +330,30 @@ Item {
                 // Append additional information if possible.
                 if (jsonTimeBoard.model.count > 0) {
 
-                    console.log("Appending... " + jsonTimeBoard.model.get(0).trip_headsign + " to " + i)
                     stopTimeBoard.setProperty(i, "trip_headsign", jsonTimeBoard.model.get(0).trip_headsign);
-                    console.log("trip_headsign is now: " + stopTimeBoard.get(i).trip_headsign)
-
-                    console.log("Appending... " + jsonTimeBoard.model.get(0).route_id + " to " + i)
                     stopTimeBoard.setProperty(i, "route_id", jsonTimeBoard.model.get(0).route_id)
-                    console.log("route_id is now: " + stopTimeBoard.get(i).route_id)
+
+                    // Find the route_short_name, route_color & route_text_color
+                    // from "Routes search by stop_id" by using route_id
+
+                    for (j = 0; j < jsonTimeBoard2.model.count; j++) {
+                        if (jsonTimeBoard2.model.get(j).route_id === stopTimeBoard.get(i).route_id) {
+                            stopTimeBoard.setProperty(i, "route_short_name", jsonTimeBoard2.model.get(j).route_short_name);
+                            stopTimeBoard.setProperty(i, "route_color", jsonTimeBoard2.model.get(j).route_color);
+                            stopTimeBoard.setProperty(i, "route_text_color", jsonTimeBoard2.model.get(j).route_text_color);
+                        }
+                    }
 
                     i++;
                 }
             } else {
-                i = 0;
+                i = 0; j = 0;
                 jsonTimeBoard.source = "";
                 jsonTimeBoard.model.clear();
-                stopTimer_c.running = true;
-                stopTimer_b.running = false;
-            }
-        }
-    }
-
-    /* FOR: "Routes list filtered by ID" - get route_short_name, route_color & route_text_color */
-    Timer {
-        id: stopTimer_c
-        interval: 1;
-        running: false;
-        repeat: true;
-        onTriggered: {
-            // Change JSON Model if needed
-            //console.log("i is: " + i)
-            if (i < stopTimeBoard.count) {
-
-                if (jsonTimeBoard.source !== "https://api.at.govt.nz/v1/gtfs/routes/routeId/" +
-                        stopTimeBoard.get(i).route_id + "?api_key=" + apiKey.at) {
-
-                    jsonTimeBoard.source = "";
-                    jsonTimeBoard.model.clear();
-
-                    jsonTimeBoard.source = "https://api.at.govt.nz/v1/gtfs/routes/routeId/" +
-                            stopTimeBoard.get(i).route_id + "?api_key=" + apiKey.at
-                    console.log("jsonTimeBoard.source is now: " + jsonTimeBoard.source)
-                }
-
-                // Append additional information if possible.
-                if (jsonTimeBoard.model.count > 0) {
-                    console.log("Appending... " + jsonTimeBoard.model.get(0).route_short_name + " to " + i);
-                    stopTimeBoard.setProperty(i, "route_short_name", jsonTimeBoard.model.get(0).route_short_name);
-                    console.log("route_short_name is now: " + stopTimeBoard.get(i).route_short_name);
-
-                    console.log("Appending... " + jsonTimeBoard.model.get(0).route_color + " to " + i);
-                    stopTimeBoard.setProperty(i, "route_color", jsonTimeBoard.model.get(0).route_color);
-                    console.log("route_color is now: " + stopTimeBoard.get(i).route_color);
-
-                    console.log("Appending... " + jsonTimeBoard.model.get(0).route_text_color + " to " + i);
-                    stopTimeBoard.setProperty(i, "route_text_color", jsonTimeBoard.model.get(0).route_text_color);
-                    console.log("route_text_color is now: " + stopTimeBoard.get(i).route_text_color);
-
-                    i++
-                }
-            } else {
-                i = 0;
-                jsonTimeBoard.source = "";
-                jsonTimeBoard.model.clear();
+                jsonTimeBoard2.source = "";
+                jsonTimeBoard2.model.clear();
                 root.whetherLoadingStopTimeBoard = false;
-                stopTimer_c.running = false;
+                stopTimer_b.running = false;
             }
         }
     }

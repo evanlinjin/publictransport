@@ -56,7 +56,6 @@ MainView {
     HomePage {id: mainPage; visible: false; head.contents: CustomHeader{iconName: "home"}}
     Component{id: timeBoardPage; TimeBoardPage{visible: false;}}
     SettingsPage {visible: false; id: settingsPage; head.contents: CustomHeader{iconName: "settings"}}
-    Component {id: settingsNotificationsPage; SettingsNotificationsPage { visible: false; head.contents: CustomHeader{iconName: "alarm-clock"}}}
     Component {id: aboutPage; AboutPage {visible: false; head.contents: CustomHeader{iconName: "info"}}}
 
     /* DIALOGS DEFINED HERE ***************************************************/

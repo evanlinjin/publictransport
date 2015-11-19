@@ -10,12 +10,6 @@ Page {
     title: i18n.tr("Settings");
     head.actions: [
         Action {
-            iconName: "edit-clear"
-            text: i18n.tr("Reset Settings");
-            onTriggered: {}
-        },
-
-        Action {
             iconName: "info";
             text: i18n.tr("Information");
             onTriggered: {pageStack.push(aboutPage);}
@@ -25,13 +19,9 @@ Page {
     onActiveChanged: update()
 
     function update() {
-        notificationSwitch.checked = settings.notificationsBool;
-        timeFormatSwitch.checked = settings.show12hrTime;
         searchThumbnailSelector.subText = i18n.tr(searchThumbnailTypes.get(settings.searchThumbNum).name);
         serviceProviderSelector.subText = i18n.tr(settings.service)
-
         flickable.update();
-        notificationsHeader.text = i18n.tr("Notifications") + " (" + notifications.getCountShown() + ")";
     }
 
     Flickable {
@@ -50,20 +40,6 @@ Page {
                 right: parent.right
             }
 
-            ListItem2.Standard {
-                id: notificationsHeader
-                text: i18n.tr("Notifications") + " (" + notifications.getTimeRange() + ")"
-                showDivider: false
-                progression: true
-                control: Switch {
-                    id: notificationSwitch
-                    checked: settings.notificationsBool
-                    onClicked: {settings.notificationsBool = checked;}
-                    onCheckedChanged: {settings.notificationsBool = checked;}
-                }
-                onClicked: {pageStack.push(settingsNotificationsPage)}
-            }
-
             ListItem2.Divider {} ListItem2.Header { text: "General:"}
 
             ListItem2.Subtitled {
@@ -73,20 +49,6 @@ Page {
                 showDivider: false
                 progression: true
                 onClicked: {PopupUtils.open(searchThumbnailDialogue, searchThumbnailSelector)}
-            }
-
-            ListItem2.Divider {} ListItem2.Header { text: "Time Format:"}
-
-            ListItem2.Standard {
-                id: timeFormatSelector
-                text: i18n.tr("Use 12-Hour Time")
-                showDivider: false
-                control : Switch {
-                    id: timeFormatSwitch
-                    checked: settings.show12hrTime
-                    onClicked: {settings.show12hrTime = checked;}
-                    onCheckedChanged: {settings.show12hrTime = checked;}
-                }
             }
 
             ListItem2.Divider {} ListItem2.Header { text: "Theme:"}
@@ -114,7 +76,7 @@ Page {
             ListItem2.Subtitled {
                 id: serviceProviderSelector
                 text: i18n.tr("Change Service Provider...")
-                subText: i18n.tr(settings.service)
+                subText: i18n.tr("Auckland Transport (Currently the only option)")
                 showDivider: false
                 progression: true
                 onClicked: {PopupUtils.open(serviceProviderDialogue, serviceProviderSelector)}

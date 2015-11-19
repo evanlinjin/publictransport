@@ -25,18 +25,13 @@ Page {
         root.stopTimeBoard.getRoutes(stop_id)
     }
 
-    //---------------------------------------------------------------- FUNCTIONS
-    function reload() {
-        root.stopTimeBoard.getRoutes(stop_id)
-    }
-
     //-------------------------------------------------------- HEADER DEFINITION
     head {
         actions: [
             Action {
                 iconName: "reload"
                 text: i18n.tr("Reload")
-                onTriggered: {reload()}
+                onTriggered: {root.stopTimeBoard.reload(stop_id)}
             },
             Action {
                 id: favouritesAction
@@ -57,19 +52,23 @@ Page {
 
             }
         ]
+        backAction: Action { iconName: "back"; text: i18n.tr("Back");
+            onTriggered: {pageStack.pop(); root.stopTimeBoard.stopLoading();}
+        }
         contents: CustomHeader{mainTitle: stop_code; iconName: "location";}
     }
 
     //---------------------------------------------------------- BODY DEFINITION
 
-    Flickable {
+    Rectangle {
         id: flickable
         anchors.fill: page
         width: parent.width
         height: parent.height
-        contentWidth: parent.width
-        contentHeight: topImage.height + timeBoard.height
-        clip: true
+        //contentWidth: parent.width
+        //contentHeight: topImage.height + timeBoard.height
+        //clip: true
+        color: "transparent"
 
         /********************************************************** TOP IMAGE */
 
@@ -136,10 +135,11 @@ Page {
         UbuntuListView {
             id: timeBoard
             width: parent.width
-            height: units.gu(4) * count + units.gu(3)
+            height: page.height - topImage.height//units.gu(4) * count + units.gu(3)
             anchors.top: topImage.bottom
+            //anchors.bottom: page.bottom
             clip: true;
-            interactive: false;
+            //interactive: false;
 
             /* HEADER */
             headerPositioning: ListView.OverlayHeader
@@ -282,9 +282,9 @@ Page {
 
     Timer {
         id: updateTimer
-        interval: 3000;
-        running: true;
-        repeat: true;
+        interval: 2000;
+        running: root.whetherLoadingStopTimeBoard;
+        repeat: false;
         onTriggered: {
             timeBoard.model = 0
             timeBoard.model = root.stopTimeBoard

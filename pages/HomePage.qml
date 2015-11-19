@@ -43,7 +43,7 @@ PageWithBottomEdge {
         //------------------------------------------------------------- SECTIONS
 
         sections {
-            model: [i18n.tr("Favourites"), i18n.tr("Nearby"), i18n.tr("History")];
+            model: [i18n.tr("Favourites"), i18n.tr("Nearby")];
             selectedIndex: 0
         }
     }  
@@ -100,20 +100,6 @@ PageWithBottomEdge {
 //                    onClicked: {root.locationSearch.reloadList()}
 //                }
             }
-
-            //---------------------------------------------------------- HISTORY
-
-            HistoryView {
-                id: historyView;
-
-                EmptyState {
-                    id: historyEmptyState
-                    visible: true
-                    iconName: "history"
-                    title: i18n.tr("No history")
-                    subTitle: "Feature not implemented"
-                }
-            }
         }
 
         interactive: false
@@ -129,6 +115,6 @@ PageWithBottomEdge {
     ////////////////////////////////////////////////////////////////////////////
 
     bottomEdgeTitle: i18n.tr("Search")
-    bottomEdgePageComponent: SimpleSearchPage {id: simpleSearchPage; visible: false;}
+    bottomEdgePageComponent: Component {SimpleSearchPage {id: simpleSearchPage; visible: false;}}
 }
 

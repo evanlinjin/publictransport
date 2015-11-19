@@ -17,11 +17,6 @@ Rectangle {
 
     // -------------------------------------------------------------------------
 
-    function refresh() {
-        locationSearch.updateJSONModel();
-        grid.update();
-    }
-
     Rectangle {
         width: parent.width - units.gu(1);
         height: parent.height; x: units.gu(0.5);
@@ -191,7 +186,6 @@ Rectangle {
                         }
                     }
                 }
-                //color: "white"; opacity: 0.6
             }
         }
     }
