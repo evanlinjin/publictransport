@@ -2,7 +2,7 @@
     "name": "publictransport.evanlinjin",
     "description": "Search and find bus stops, train stations and ferry piers. View real time boards, and favourite them.",
     "architecture": "all",
-    "title": "Public Transport",
+    "title": "Where AT?",
     "hooks": {
         "PublicTransport": {
             "apparmor": "PublicTransport.apparmor",

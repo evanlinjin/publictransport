@@ -21,6 +21,7 @@ Page {
             onTriggered: {searchField.text = root.searchQuery = ""; setAt(false);}
         }
     ]
+    head.foregroundColor: "#1E3D51"
 
     /**************************************************************************/
     /* SEARCH BAR DEFINITION:                                                 */

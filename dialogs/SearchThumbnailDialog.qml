@@ -6,7 +6,7 @@ import Ubuntu.Components.ListItems 1.3 as ListItem
 Component {
     Dialog {
         id: dialogue
-        title: "Search Thumbnail Settings"
+        title: "Thumbnail Type"
         width: mainPage.width
 
         ListItem.ItemSelector {

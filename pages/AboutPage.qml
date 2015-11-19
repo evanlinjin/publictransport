@@ -4,6 +4,7 @@ import "../components"
 
 Page {
     title: "About"
+    head.foregroundColor: "#1E3D51"
 
     property string app_version: "0.1"
     property string app_description: i18n.tr("Search and find bus stops, train stations and ferry piers. View real time boards, and favourite them.")
@@ -24,7 +25,7 @@ Page {
 
             Label {
                 width: parent.width
-                text: "<b>Public Transport</b> (" + app_version + ")"
+                text: "<b>Where AT?</b> (" + app_version + ")"
                 fontSize: "large"
                 horizontalAlignment: Text.AlignHCenter
             }

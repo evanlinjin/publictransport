@@ -57,6 +57,7 @@ Page {
         }
         contents: CustomHeader{mainTitle: stop_code; iconName: "location";}
     }
+    head.foregroundColor: "#1E3D51"
 
     //---------------------------------------------------------- BODY DEFINITION
 

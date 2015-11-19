@@ -2,8 +2,7 @@
     "policy_groups": [
         "networking",
         "location",
-        "connectivity",
-        "push-notification-client"
+        "connectivity"
     ],
     "policy_version": 1.3
 }

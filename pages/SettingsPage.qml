@@ -15,12 +15,12 @@ Page {
             onTriggered: {pageStack.push(aboutPage);}
         }
     ]
+    head.foregroundColor: "#1E3D51"
 
     onActiveChanged: update()
 
     function update() {
         searchThumbnailSelector.subText = i18n.tr(searchThumbnailTypes.get(settings.searchThumbNum).name);
-        serviceProviderSelector.subText = i18n.tr(settings.service)
         flickable.update();
     }
 
@@ -76,7 +76,7 @@ Page {
             ListItem2.Subtitled {
                 id: serviceProviderSelector
                 text: i18n.tr("Change Service Provider...")
-                subText: i18n.tr("Auckland Transport (Currently the only option)")
+                subText: i18n.tr("Auckland Transport")
                 showDivider: false
                 progression: true
                 onClicked: {PopupUtils.open(serviceProviderDialogue, serviceProviderSelector)}

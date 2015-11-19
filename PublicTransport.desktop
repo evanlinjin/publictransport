@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=Public Transport
+Name=Where AT?
 Exec=qmlscene $@ Main.qml
 Icon=PublicTransport.png
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
-X-Ubuntu-Splash-Title=Public Transport
+X-Ubuntu-Splash-Title=Where AT?
 X-Ubuntu-Splash-Color=white

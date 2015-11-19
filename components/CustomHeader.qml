@@ -7,7 +7,7 @@ Row {
     id: main
     width: mainPage.width
 
-    property string mainTitle: i18n.tr("Public Transport")
+    property string mainTitle: i18n.tr("Where AT?")
     property string iconName: "stock_website"
     //property bool tickerTrigger: false
 
@@ -18,7 +18,7 @@ Row {
         height: units.gu(4)
         //source: serviceProviders.get(settings.serviceProviderIndex).icon
         name: iconName
-        color: UbuntuColors.orange
+        color: "#1E3D51"
     }
 
     Rectangle {width: units.gu(2); height: width; color: "transparent"}
