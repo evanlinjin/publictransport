@@ -333,13 +333,13 @@ Item {
                     stopTimeBoard.setProperty(i, "trip_headsign", jsonTimeBoard.model.get(0).trip_headsign);
                     stopTimeBoard.setProperty(i, "route_id", jsonTimeBoard.model.get(0).route_id)
 
-                    // Find the route_short_name, route_color & route_text_color
+                    // Find the route_short_name & route_text_color
                     // from "Routes search by stop_id" by using route_id
 
                     for (j = 0; j < jsonTimeBoard2.model.count; j++) {
                         if (jsonTimeBoard2.model.get(j).route_id === stopTimeBoard.get(i).route_id) {
                             stopTimeBoard.setProperty(i, "route_short_name", jsonTimeBoard2.model.get(j).route_short_name);
-                            stopTimeBoard.setProperty(i, "route_color", jsonTimeBoard2.model.get(j).route_color);
+                            //stopTimeBoard.setProperty(i, "route_color", jsonTimeBoard2.model.get(j).route_color);
                             stopTimeBoard.setProperty(i, "route_text_color", jsonTimeBoard2.model.get(j).route_text_color);
                         }
                     }
