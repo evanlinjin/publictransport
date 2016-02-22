@@ -11,5 +11,5 @@
     },
     "version": "0.2",
     "maintainer": "Evan Lin <evan.linjin@gmail.com>",
-    "framework": "ubuntu-sdk-15.04"
+    "framework": "ubuntu-sdk-15.04.4"
 }
