@@ -55,7 +55,7 @@ MainView {
 
     HomePage {id: mainPage; visible: false; head.contents: CustomHeader{iconName: "home"}}
     Component{id: timeBoardPage; TimeBoardPage{visible: false;}}
-    SettingsPage {visible: false; id: settingsPage; head.contents: CustomHeader{iconName: "settings"}}
+    Component{id: settingsPage; SettingsPage {visible: false; head.contents: CustomHeader{iconName: "settings"}}}
     Component {id: aboutPage; AboutPage {visible: false; head.contents: CustomHeader{iconName: "info"}}}
 
     /* DIALOGS DEFINED HERE ***************************************************/
