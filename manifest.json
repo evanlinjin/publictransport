@@ -9,7 +9,7 @@
             "desktop": "PublicTransport.desktop"
         }
     },
-    "version": "0.1",
+    "version": "0.2",
     "maintainer": "Evan Lin <evan.linjin@gmail.com>",
     "framework": "ubuntu-sdk-15.04"
 }

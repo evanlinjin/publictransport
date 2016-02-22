@@ -21,6 +21,7 @@ Row {
         color: "#1E3D51"
     }
 
+
     Rectangle {width: units.gu(2); height: width; color: "transparent"}
 
     Label {
