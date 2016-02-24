@@ -120,8 +120,12 @@ MainView {
         return hh + ":" + mm + end
     }
 
-    function getLocation() {
-        positionSource.update();
+    function getLocation() {positionSource.update(); geoTimer.running = true;}
+    Timer { id: geoTimer
+        interval: 2; running: false; repeat: false;
+        onTriggered: {console.log("grabbing location..."); getLocation2();}
+    }
+    function getLocation2() {
         if (typeof positionSource.position.coordinate.latitude === 'number' &&
                 positionSource.position.coordinate.latitude >= -90 &&
                 positionSource.position.coordinate.latitude <= 90) {
@@ -155,7 +159,7 @@ MainView {
     }
 
     function reloadHome() {
-        //root.getLocation()
+        root.getLocation()
         root.favourites.reloadList()
         root.locationSearch.reloadList()
     }

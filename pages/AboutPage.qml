@@ -6,7 +6,7 @@ Page {
     title: "About"
     head.foregroundColor: "#1E3D51"
 
-    property string app_version: "0.2"
+    property string app_version: "0.3.2"
     property string app_description: i18n.tr("Search and find bus stops, train stations and ferry piers. View real time boards, and favourite them.")
 
     Column {

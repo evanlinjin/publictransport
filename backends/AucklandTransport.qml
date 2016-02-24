@@ -148,7 +148,7 @@ Item {
 
         Timer {
             id: timer
-            interval: 1;
+            interval: 3;
             running: false;
             repeat: false;
             onTriggered: {
